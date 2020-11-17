@@ -1,0 +1,52 @@
+plugins {
+    id "com.jfrog.bintray" version "1.8.5"
+}
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+apply from: rootProject.file('release-bintray.gradle')
+
+ext {
+    // Minimum required Testerra version
+    testerraCompileVersion = '1.0-RC-16'
+    // Unit tests use the latest Testerra version
+    testerraTestVersion = '[1.0-RC,2-SNAPSHOT)'
+
+    // Default version
+    moduleVersion = '1-SNAPSHOT'
+    if (System.properties.containsKey('moduleVersion')) {
+        moduleVersion = System.getProperty('moduleVersion')
+    }
+
+    group 'eu.tsystems.mms.tic.testerra'
+    version moduleVersion
+}
+
+dependencies {
+    compileOnly 'eu.tsystems.mms.tic.testerra:core:' + testerraCompileVersion
+    implementation 'eu.tsystems.mms.tic.testerra:surefire-connector:' + testerraCompileVersion
+
+    testImplementation 'eu.tsystems.mms.tic.testerra:core:' + testerraTestVersion
+
+}
+
+test {
+    useTestNG()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+//task unitTests(type: Test) {
+//    useTestNG() {
+//        suites 'src/test/resources/unit_tests.xml'
+//    }
+//}
+//
+//task integrationTests(type: Test) {
+//    useTestNG() {
+//        suites 'src/test/resources/integration_tests.xml'
+//    }
+//}
