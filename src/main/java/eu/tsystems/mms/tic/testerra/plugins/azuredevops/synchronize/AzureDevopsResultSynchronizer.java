@@ -27,6 +27,11 @@ public class AzureDevopsResultSynchronizer extends AbstractCommonSynchronizer im
         log().info("Method " + event.getTestMethod().getMethodName() + " failed");
     }
 
+    @Override
+    protected void pOnTestSkip(MethodEndEvent event) {
+
+    }
+
     private void init() {
         log().info("Start sync at " + new Date().toString());
     }
