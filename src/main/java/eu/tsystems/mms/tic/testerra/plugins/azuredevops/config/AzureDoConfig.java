@@ -80,6 +80,10 @@ public class AzureDoConfig implements Loggable {
         return azureAuthenticationString;
     }
 
+    public String getAzureApiRoot() {
+        return azureApiRoot;
+    }
+
     public boolean isAzureSyncEnabled() {
         return this.azureSyncEnabled;
     }
