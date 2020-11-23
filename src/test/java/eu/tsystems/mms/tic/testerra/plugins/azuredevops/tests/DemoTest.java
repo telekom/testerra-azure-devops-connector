@@ -31,7 +31,7 @@ public class DemoTest extends TesterraTest {
     public void test2GetRun() {
 
         AzureDevOpsClient client = new AzureDevOpsClient();
-        Run run = client.getRun(1701);
+        Run run = client.getRun(1700);
         System.out.println(run.getName());
     }
 

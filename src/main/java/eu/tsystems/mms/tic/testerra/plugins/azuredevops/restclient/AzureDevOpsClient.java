@@ -45,21 +45,24 @@ public class AzureDevOpsClient implements Loggable {
     }
 
     public Run getRun(int id) {
-        Run run = this.getBuilder(this.config.getAzureApiRoot() + "test/runs/" + id).get(Run.class);
+        ClientResponse response = this.getBuilder(this.config.getAzureApiRoot() + "test/runs/" + id).get(ClientResponse.class);
+        if (response.getStatus() != HttpStatus.SC_OK) {
+            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
+            log().error(errorResponse.getMessage());
+        } else {
+            return response.getEntity(Run.class);
+        }
 
-        return run;
+        return null;
     }
 
     public Run createRun(Run run) {
-//        Run post = this.getBuilder(this.config.getAzureApiRoot() + "test/runs/").post(Run.class, run);
-
-        WebResource.Builder builder = this.getBuilder(this.config.getAzureApiRoot() + "test/runs/", this.getDefaultApiVersion());
-
-        ClientResponse clientResponse = builder.post(ClientResponse.class, run);
-        if (clientResponse.getStatus() == HttpStatus.SC_OK) {
-            return clientResponse.getEntity(Run.class);
-        } else if (clientResponse.getStatus() != 200) {
-            ErrorResponse errorResponse = clientResponse.getEntity(ErrorResponse.class);
+        ClientResponse response = this.getBuilder(this.config.getAzureApiRoot() + "test/runs/", this.getDefaultApiVersion()).post(ClientResponse.class, run);
+        if (response.getStatus() != HttpStatus.SC_OK) {
+            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
+            log().error(errorResponse.getMessage());
+        } else {
+            return response.getEntity(Run.class);
         }
         return null;
     }
