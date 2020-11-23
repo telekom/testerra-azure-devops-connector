@@ -1,5 +1,6 @@
 package eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper;
 
+import com.owlike.genson.annotation.JsonDateFormat;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 
 import java.util.Date;
@@ -16,7 +17,7 @@ public class Run extends BasicObject implements Loggable {
 
     private String state;
 
-    private Date startDate;
+    private String startedDate;
 
     public Run() {
 
@@ -38,12 +39,12 @@ public class Run extends BasicObject implements Loggable {
         this.state = state;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public String getStartedDate() {
+        return startedDate;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setStartedDate(String startedDate) {
+        this.startedDate = startedDate;
     }
 
 //    @Override

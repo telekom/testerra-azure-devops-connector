@@ -7,7 +7,7 @@ package eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper;
  */
 public class BasicObject {
 
-    private int id;
+    private Integer id;
 
     private String name;
 
@@ -15,11 +15,11 @@ public class BasicObject {
 
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

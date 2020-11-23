@@ -26,6 +26,8 @@ public class AzureDoConfig implements Loggable {
 
     private String azureApiRoot;
 
+    private String azureapiVersion;
+
     private boolean azureSyncEnabled = false;
 
     private int azureTestPlanId;
@@ -38,6 +40,7 @@ public class AzureDoConfig implements Loggable {
         this.azureUserToken = PropertyManager.getProperty("azure.token");
         this.azureSyncEnabled = PropertyManager.getBooleanProperty("azure.sync.enabled", false);
         this.azureApiRoot = PropertyManager.getProperty("azure.project.root");
+        this.azureapiVersion = PropertyManager.getProperty("azure.api.version=5.1");
 
         this.azureTestPlanId = PropertyManager.getIntProperty("azure.testplan.id");
 
@@ -82,6 +85,10 @@ public class AzureDoConfig implements Loggable {
 
     public String getAzureApiRoot() {
         return azureApiRoot;
+    }
+
+    public String getAzureapiVersion() {
+        return azureapiVersion;
     }
 
     public boolean isAzureSyncEnabled() {
