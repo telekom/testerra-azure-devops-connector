@@ -5,6 +5,8 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.config.AzureDoConfig;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.ErrorResponse;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Points;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.PointsFilter;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Run;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.utils.ProxyUtils;
@@ -46,6 +48,7 @@ public class AzureDevOpsClient implements Loggable {
 
     public Run getRun(int id) {
         ClientResponse response = this.getBuilder(this.config.getAzureApiRoot() + "test/runs/" + id).get(ClientResponse.class);
+
         if (response.getStatus() != HttpStatus.SC_OK) {
             ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
             log().error(errorResponse.getMessage());
@@ -57,13 +60,33 @@ public class AzureDevOpsClient implements Loggable {
     }
 
     public Run createRun(Run run) {
-        ClientResponse response = this.getBuilder(this.config.getAzureApiRoot() + "test/runs/", this.getDefaultApiVersion()).post(ClientResponse.class, run);
+        ClientResponse response = this.getBuilder(this.config.getAzureApiRoot() + "test/runs/", this.getApiVersion()).post(ClientResponse.class, run);
+
         if (response.getStatus() != HttpStatus.SC_OK) {
             ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
             log().error(errorResponse.getMessage());
         } else {
             return response.getEntity(Run.class);
         }
+        return null;
+    }
+
+    public Points getPoints(PointsFilter filter) {
+        Points points = new Points();
+        points.setPointsFilter(filter);
+
+        ClientResponse response = this.getBuilder(
+                this.config.getAzureApiRoot() + "test/points",
+                this.getApiVersion(this.config.getAzureApiVersionGetPoints())
+        ).post(ClientResponse.class, points);
+
+        if (response.getStatus() != HttpStatus.SC_OK) {
+            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
+            log().error(errorResponse.getMessage());
+        } else {
+            return response.getEntity(Points.class);
+        }
+
         return null;
     }
 
@@ -81,9 +104,13 @@ public class AzureDevOpsClient implements Loggable {
         return builder;
     }
 
-    private MultivaluedMap getDefaultApiVersion() {
+    private MultivaluedMap getApiVersion() {
+        return getApiVersion(this.config.getAzureApiVersion());
+    }
+
+    private MultivaluedMap getApiVersion(final String version) {
         MultivaluedMap<String, String> params = new MultivaluedHashMap<>();
-        params.add("api-version", this.config.getAzureapiVersion());
+        params.add("api-version", version);
         return params;
     }
 

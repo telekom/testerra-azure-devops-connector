@@ -3,6 +3,8 @@ package eu.tsystems.mms.tic.testerra.plugins.azuredevops.tests;
 import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
 import com.owlike.genson.ext.javadatetime.JavaDateTimeBundle;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Points;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.PointsFilter;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Run;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Testplan;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.restclient.AzureDevOpsClient;
@@ -86,27 +88,41 @@ public class DemoTest extends TesterraTest {
     }
 
     @Test
-    public void testGenson() {
+    public void test_FindTestpoint() {
+        PointsFilter pointsFilter = new PointsFilter();
+        pointsFilter.addTestcaseId(2257);
 
-//        JavaDateTimeBundle dateTimeBundle = new JavaDateTimeBundle().setFormatter(LocalDate.class, DateTimeFormatter.ISO_INSTANT);
-        JavaDateTimeBundle dateTimeBundle = new JavaDateTimeBundle().setFormatter(LocalDateTime.class, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        dateTimeBundle = new JavaDateTimeBundle();
+        AzureDevOpsClient azureDevOpsClient = new AzureDevOpsClient();
+        Points points = azureDevOpsClient.getPoints(pointsFilter);
 
-//        Genson genson = new GensonBuilder().useDateAsTimestamp(false).withBundle(dateTimeBundle).setSkipNull(true).create();
-        Genson genson = new GensonBuilder().create();
-
-        String json = "{\n" +
-                "\t\"id\": 1259,\n" +
-                "\t\"name\": \"Foobar run\",\n" +
-                "\t\"plan\": {\n" +
-                "\t\t\"id\": 2294,\n" +
-                "\t\t\"name\": \"aDNS\"\n" +
-                "\t},\n" +
-                "\t\"startedDate\": \"2020-11-17T14:27:23.587\",\n" +
-                "\t\"state\": \"InProgress\"\n" +
-                "}";
-
-        Run run = genson.deserialize(json, Run.class);
+        // If there is no point or result is 404, the testcase is not added to a testplan
+        // points contains all found
+        System.out.println(points.getPoints().get(0).getId());
     }
+
+
+//    @Test
+//    public void testGenson() {
+//
+////        JavaDateTimeBundle dateTimeBundle = new JavaDateTimeBundle().setFormatter(LocalDate.class, DateTimeFormatter.ISO_INSTANT);
+//        JavaDateTimeBundle dateTimeBundle = new JavaDateTimeBundle().setFormatter(LocalDateTime.class, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+//        dateTimeBundle = new JavaDateTimeBundle();
+//
+////        Genson genson = new GensonBuilder().useDateAsTimestamp(false).withBundle(dateTimeBundle).setSkipNull(true).create();
+//        Genson genson = new GensonBuilder().create();
+//
+//        String json = "{\n" +
+//                "\t\"id\": 1259,\n" +
+//                "\t\"name\": \"Foobar run\",\n" +
+//                "\t\"plan\": {\n" +
+//                "\t\t\"id\": 2294,\n" +
+//                "\t\t\"name\": \"aDNS\"\n" +
+//                "\t},\n" +
+//                "\t\"startedDate\": \"2020-11-17T14:27:23.587\",\n" +
+//                "\t\"state\": \"InProgress\"\n" +
+//                "}";
+//
+//        Run run = genson.deserialize(json, Run.class);
+//    }
 
 }
