@@ -28,10 +28,10 @@ dependencies {
     implementation 'eu.tsystems.mms.tic.testerra:surefire-connector:' + testerraCompileVersion
 
     implementation 'org.glassfish.jersey.core:jersey-client:2.32'
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:2.32'
 //    implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.32'
     // Better JSON mapper for Jersey
     implementation 'com.owlike:genson:1.6'
-    implementation 'com.owlike:genson-java-datetime:1.6'
 
     testImplementation 'eu.tsystems.mms.tic.testerra:core:' + testerraTestVersion
 

@@ -25,7 +25,10 @@ package eu.tsystems.mms.tic.testerra.plugins.azuredevops.restclient;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.client.urlconnection.HttpURLConnectionFactory;
 import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 
+import javax.ws.rs.client.ClientBuilder;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -38,7 +41,7 @@ public final class RESTClientFactory {
     }
 
     public static Client createDefault() {
-        return Client.create();
+        return (Client) ClientBuilder.newClient().property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
     }
 
     public static Client createWithProxy(final URL proxyUrl) {

@@ -1,7 +1,5 @@
 package eu.tsystems.mms.tic.testerra.plugins.azuredevops.tests;
 
-import com.owlike.genson.Genson;
-import com.owlike.genson.GensonBuilder;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Point;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Points;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.PointsFilter;
@@ -10,13 +8,11 @@ import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Results;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Run;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Testplan;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.restclient.AzureDevOpsClient;
-import eu.tsystems.mms.tic.testerra.plugins.azuredevops.restclient.AzureDevOpsClient2;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import org.testng.annotations.Test;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,52 +38,22 @@ public class DemoTest extends TesterraTest {
     }
 
     @Test
-    public void test2a_GetRun() {
-
-        AzureDevOpsClient2 client = new AzureDevOpsClient2();
-        Run run = client.getRun(1701);
-        System.out.println(run.getName());
-    }
-
-    @Test
     public void createRun() {
         Run run = new Run();
         Testplan testplan = new Testplan();
         testplan.setId(2294);
-        run.setName("Foobar run");
+        run.setName("AdminTool regression test");
         run.setState("InProgress");
         run.setPlan(testplan);
         run.setStartedDate(Instant.now().toString());
-
-//        Genson genson = new GensonBuilder().setSkipNull(true).create();
-//
-//
-//        String json = genson.serialize(run);
 
         AzureDevOpsClient client = new AzureDevOpsClient();
 
         Run createdRun = client.createRun(run);
 
-    }
-
-    @Test
-    public void test10_createRun() {
-        Run run = new Run();
-        Testplan testplan = new Testplan();
-        testplan.setId(2294);
-        run.setName("Foobar run");
-        run.setState("InProgress");
-        run.setPlan(testplan);
-        run.setStartedDate(Instant.now().toString());
-
-//        Genson genson = new GensonBuilder().setSkipNull(true).create();
-//
-//
-//        String json = genson.serialize(run);
-
-        AzureDevOpsClient2 client = new AzureDevOpsClient2();
-
-        Run createdRun = client.createRun(run);
+        createdRun.setState("Completed");
+        createdRun.setComment("This tests was executed with Testerra.");
+        client.updateRun(createdRun);
 
     }
 
@@ -131,6 +97,12 @@ public class DemoTest extends TesterraTest {
         Results results = client.addResult(resultList, testRunId);
         System.out.println(results.getCount());
 
+    }
+
+    @Test
+    public void test_updateRun() {
+        Run run = new Run();
+//        run.setId();
     }
 
 //    @Test

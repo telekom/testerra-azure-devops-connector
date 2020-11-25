@@ -19,6 +19,8 @@ public class Run extends BasicObject implements Loggable {
 
     private String startedDate;
 
+    private String comment;
+
     public Run() {
 
     }
@@ -47,21 +49,11 @@ public class Run extends BasicObject implements Loggable {
         this.startedDate = startedDate;
     }
 
-//    @Override
-//    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-//        return type == Run.class;
-//    }
-//
-//    @Override
-//    public Run readFrom(Class<Run> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
-//                        InputStream entityStream) throws IOException, WebApplicationException {
-//        try {
-//            JAXBContext jaxbContext = JAXBContext.newInstance(Run.class);
-//            Run run = (Run) jaxbContext.createUnmarshaller().unmarshal(entityStream);
-//        } catch (JAXBException e) {
-//            log().error("Cannot parse to Run object", e);
-//        }
-//
-//        return null;
-//    }
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 }
