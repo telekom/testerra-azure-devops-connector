@@ -14,7 +14,6 @@ public class Results {
     private List<Result> value;
 
     public Results() {
-
     }
 
     public int getCount() {

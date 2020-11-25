@@ -13,12 +13,17 @@ public class Result extends BasicObject {
     /**
      * Test outcome of tet result.
      * Valid values = (Unspecified, None, Passed, Failed, Inconclusive, Timeout, Aborted, Blocked, NotExecuted, Warning, Error, NotApplicable, Paused, InProgress, NotImpacted)
+     *
+     * For syncing the tests only Passed, Failed and NotExecuted (=Skipped) are useful.
+     *
      */
     private String outcome;
 
     private String state;
 
     private Point testPoint;
+
+    private int priority = 1;
 
     /**
      * Failure type of test result.
@@ -75,6 +80,14 @@ public class Result extends BasicObject {
 
     public void setTestPoint(Point testPoint) {
         this.testPoint = testPoint;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     public String getFailureType() {

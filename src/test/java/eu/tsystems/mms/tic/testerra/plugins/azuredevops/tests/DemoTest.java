@@ -2,19 +2,23 @@ package eu.tsystems.mms.tic.testerra.plugins.azuredevops.tests;
 
 import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
-import com.owlike.genson.ext.javadatetime.JavaDateTimeBundle;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Point;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Points;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.PointsFilter;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Result;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Results;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Run;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Testplan;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.restclient.AzureDevOpsClient;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.restclient.AzureDevOpsClient2;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
+import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import org.testng.annotations.Test;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 17.11.2020
@@ -100,6 +104,34 @@ public class DemoTest extends TesterraTest {
         System.out.println(points.getPoints().get(0).getId());
     }
 
+    @Test
+    public void test_AddTestResult() {
+        AzureDevOpsClient client = new AzureDevOpsClient();
+        int testcaseId = 2257;
+        int testRunId = 1704;
+
+        // Find out the test point
+        PointsFilter pointsFilter = new PointsFilter();
+        pointsFilter.addTestcaseId(testcaseId);
+        Point point = client.getPoints(pointsFilter).getPoints().get(0);
+
+        // Create result
+        Result result = new Result();
+        result.setTestPoint(point);
+        result.setStartedDate(Instant.now().toString());
+        TimerUtils.sleep(5000);
+        result.setCompletedDate(Instant.now().toString());
+        result.setOutcome("Passed");
+        List<Result> resultList = new ArrayList<>();
+        resultList.add(result);
+
+//        Genson genson = new GensonBuilder().setSkipNull(true).create();
+//        genson.serialize(resultList);
+
+        Results results = client.addResult(resultList, testRunId);
+        System.out.println(results.getCount());
+
+    }
 
 //    @Test
 //    public void testGenson() {

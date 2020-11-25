@@ -7,6 +7,8 @@ import eu.tsystems.mms.tic.testerra.plugins.azuredevops.config.AzureDoConfig;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.ErrorResponse;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Points;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.PointsFilter;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Result;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Results;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Run;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.utils.ProxyUtils;
@@ -16,6 +18,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+import java.util.List;
 
 /**
  * Created on 17.11.2020
@@ -85,6 +88,19 @@ public class AzureDevOpsClient implements Loggable {
             log().error(errorResponse.getMessage());
         } else {
             return response.getEntity(Points.class);
+        }
+
+        return null;
+    }
+
+    public Results addResult(List<Result> resultList, final int testRunId) {
+        ClientResponse response = this.getBuilder(this.config.getAzureApiRoot() + "test/runs/" + testRunId + "/results", this.getApiVersion()).post(ClientResponse.class, resultList);
+
+        if (response.getStatus() != HttpStatus.SC_OK) {
+            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
+            log().error(errorResponse.getMessage());
+        } else {
+            return response.getEntity(Results.class);
         }
 
         return null;
