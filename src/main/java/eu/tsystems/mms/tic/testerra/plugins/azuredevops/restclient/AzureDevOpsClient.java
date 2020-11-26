@@ -1,8 +1,5 @@
 package eu.tsystems.mms.tic.testerra.plugins.azuredevops.restclient;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.config.AzureDoConfig;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.ErrorResponse;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Points;
@@ -11,14 +8,20 @@ import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Result;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Results;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Run;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
-import eu.tsystems.mms.tic.testframework.utils.ProxyUtils;
 import org.apache.http.HttpStatus;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 17.11.2020
@@ -35,59 +38,59 @@ public class AzureDevOpsClient implements Loggable {
 
         this.config = AzureDoConfig.getInstance();
 
-//        if (ProxyUtils.getSystemHttpsProxyUrl() != null) {
-//            this.client = RESTClientFactory.createWithProxy(ProxyUtils.getSystemHttpsProxyUrl());
-//        } else if (ProxyUtils.getSystemHttpProxyUrl() != null) {
-//            this.client = RESTClientFactory.createWithProxy(ProxyUtils.getSystemHttpProxyUrl());
-//        } else {
-            this.client = RESTClientFactory.createDefault();
-//        }
+        // AzureDevOps API also uses the REST method 'PATCH'
+        // To use it in Jensey, you need to activate 'SET_METHOD_WORKAROUND'
+        // See also https://stackoverflow.com/questions/22355235/patch-request-using-jersey-client
+        this.client = ClientBuilder.newClient().property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
+
     }
 
     public void showProjects() {
-        String s = this.getBuilder("/agile/_apis/projects").get(String.class);
+        WebTarget webTarget = client.target(this.config.getAzureUrl()).path("/agile/_apis/projects");
+
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        invocationBuilder = invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Basic " + this.config.getAzureAuthenticationString());
+        String s = invocationBuilder.get(String.class);
+
         log().info(s);
     }
 
     public Run getRun(int id) {
-        ClientResponse response = this.getBuilder(this.config.getAzureApiRoot() + "test/runs/" + id).get(ClientResponse.class);
+        Response response = this.getBuilder("test/runs/" + id).get();
 
         if (response.getStatus() != HttpStatus.SC_OK) {
-            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
+            ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
             log().error(errorResponse.getMessage());
         } else {
-            return response.getEntity(Run.class);
+            return response.readEntity(Run.class);
         }
 
         return null;
     }
 
     public Run createRun(Run run) {
-        ClientResponse response = this.getBuilder(
-                this.config.getAzureApiRoot() + "test/runs/",
-                this.getApiVersion()
-        ).post(ClientResponse.class, run);
+        Response response = this.getBuilder("test/runs/", this.getApiVersion()).post(Entity.entity(run, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() != HttpStatus.SC_OK) {
-            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
+            ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
             log().error(errorResponse.getMessage());
         } else {
-            return response.getEntity(Run.class);
+            return response.readEntity(Run.class);
         }
         return null;
     }
 
     public Run updateRun(Run run) {
-        ClientResponse response = this.getBuilder(
-                this.config.getAzureApiRoot() + "test/runs/" + run.getId(),
-                this.getApiVersion()
-        ).method("PATCH", ClientResponse.class, run);
+        // PATCH is not supported with a method --> need to build 'manually'
+        Response response = this.getBuilder("test/runs/" + run.getId(), this.getApiVersion())
+                .build("PATCH", Entity.entity(run, MediaType.APPLICATION_JSON))
+                .invoke();
 
         if (response.getStatus() != HttpStatus.SC_OK) {
-            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
+            ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
             log().error(errorResponse.getMessage());
         } else {
-            return response.getEntity(Run.class);
+            return response.readEntity(Run.class);
         }
         return null;
     }
@@ -96,58 +99,60 @@ public class AzureDevOpsClient implements Loggable {
         Points points = new Points();
         points.setPointsFilter(filter);
 
-        ClientResponse response = this.getBuilder(
-                this.config.getAzureApiRoot() + "test/points",
-                this.getApiVersion(this.config.getAzureApiVersionGetPoints())
-        ).post(ClientResponse.class, points);
+        Response response = this.getBuilder("test/points", this.getApiVersion(this.config.getAzureApiVersionGetPoints())).post(Entity.entity(points, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() != HttpStatus.SC_OK) {
-            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
+            ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
             log().error(errorResponse.getMessage());
         } else {
-            return response.getEntity(Points.class);
+            return response.readEntity(Points.class);
         }
 
         return null;
     }
 
     public Results addResult(List<Result> resultList, final int testRunId) {
-        ClientResponse response = this.getBuilder(
-                this.config.getAzureApiRoot() + "test/runs/" + testRunId + "/results",
-                this.getApiVersion()
-        ).post(ClientResponse.class, resultList);
+        Response response = this.getBuilder("test/runs/" + testRunId + "/results", this.getApiVersion()).post(Entity.entity(resultList, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() != HttpStatus.SC_OK) {
-            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
+            ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
             log().error(errorResponse.getMessage());
         } else {
-            return response.getEntity(Results.class);
+            return response.readEntity(Results.class);
         }
 
         return null;
     }
 
-    private WebResource.Builder getBuilder(String path) {
+    private Invocation.Builder getBuilder(String path) {
         return this.getBuilder(path, null);
     }
 
-    private WebResource.Builder getBuilder(String path, MultivaluedMap<String, String> params) {
-        WebResource webResource = client.resource(this.config.getAzureUrl());
+    private Invocation.Builder getBuilder(String path, Map<String, String> params) {
+        WebTarget webTarget = client
+                .target(this.config.getAzureUrl())
+                .path(this.config.getAzureApiRoot())
+                .path(path);
+
         if (params != null) {
-            webResource = webResource.queryParams(params);
+            // TODO: Iterate over a HashMap
+            webTarget = webTarget.queryParam("api-version", params.get("api-version"));
         }
-        WebResource.Builder builder = webResource.path(path).type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
-        builder.header(HttpHeaders.AUTHORIZATION, "Basic " + this.config.getAzureAuthenticationString());
+
+        Invocation.Builder builder = webTarget
+                .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + this.config.getAzureAuthenticationString());
+
         return builder;
     }
 
-    private MultivaluedMap getApiVersion() {
+    private Map getApiVersion() {
         return getApiVersion(this.config.getAzureApiVersion());
     }
 
-    private MultivaluedMap getApiVersion(final String version) {
-        MultivaluedMap<String, String> params = new MultivaluedHashMap<>();
-        params.add("api-version", version);
+    private Map getApiVersion(final String version) {
+        Map<String, String> params = new HashMap<>();
+        params.put("api-version", version);
         return params;
     }
 

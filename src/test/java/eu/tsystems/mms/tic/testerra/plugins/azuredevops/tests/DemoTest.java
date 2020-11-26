@@ -17,24 +17,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created on 17.11.2020
+ * Created on 25.11.2020
  *
  * @author mgn
  */
 public class DemoTest extends TesterraTest {
 
     @Test
-    public void test1() {
+    public void test_GetProject() {
         AzureDevOpsClient client = new AzureDevOpsClient();
         client.showProjects();
     }
 
     @Test
-    public void test2GetRun() {
+    public void test_GetRun() {
+        final int runId = 1707;
+        AzureDevOpsClient client = new AzureDevOpsClient();
+        Run run = client.getRun(runId);
+    }
+
+    @Test
+    public void test_UpdateRun() {
+        final int runId = 1707;
+        Run run = new Run();
+        run.setId(runId);
+        run.setComment("This tests was executed with Testerra.");
+        run.setState("Completed");
 
         AzureDevOpsClient client = new AzureDevOpsClient();
-        Run run = client.getRun(1700);
-        System.out.println(run.getName());
+        client.updateRun(run);
     }
 
     @Test
@@ -73,8 +84,8 @@ public class DemoTest extends TesterraTest {
     @Test
     public void test_AddTestResult() {
         AzureDevOpsClient client = new AzureDevOpsClient();
-        int testcaseId = 2257;
-        int testRunId = 1704;
+        int testcaseId = 2284;
+        int testRunId = 1706;
 
         // Find out the test point
         PointsFilter pointsFilter = new PointsFilter();
@@ -98,35 +109,5 @@ public class DemoTest extends TesterraTest {
         System.out.println(results.getCount());
 
     }
-
-    @Test
-    public void test_updateRun() {
-        Run run = new Run();
-//        run.setId();
-    }
-
-//    @Test
-//    public void testGenson() {
-//
-////        JavaDateTimeBundle dateTimeBundle = new JavaDateTimeBundle().setFormatter(LocalDate.class, DateTimeFormatter.ISO_INSTANT);
-//        JavaDateTimeBundle dateTimeBundle = new JavaDateTimeBundle().setFormatter(LocalDateTime.class, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-//        dateTimeBundle = new JavaDateTimeBundle();
-//
-////        Genson genson = new GensonBuilder().useDateAsTimestamp(false).withBundle(dateTimeBundle).setSkipNull(true).create();
-//        Genson genson = new GensonBuilder().create();
-//
-//        String json = "{\n" +
-//                "\t\"id\": 1259,\n" +
-//                "\t\"name\": \"Foobar run\",\n" +
-//                "\t\"plan\": {\n" +
-//                "\t\t\"id\": 2294,\n" +
-//                "\t\t\"name\": \"aDNS\"\n" +
-//                "\t},\n" +
-//                "\t\"startedDate\": \"2020-11-17T14:27:23.587\",\n" +
-//                "\t\"state\": \"InProgress\"\n" +
-//                "}";
-//
-//        Run run = genson.deserialize(json, Run.class);
-//    }
 
 }
