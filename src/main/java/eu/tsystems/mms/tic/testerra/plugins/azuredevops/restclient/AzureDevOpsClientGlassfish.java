@@ -2,6 +2,10 @@ package eu.tsystems.mms.tic.testerra.plugins.azuredevops.restclient;
 
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.config.AzureDoConfig;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.ErrorResponse;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Points;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.PointsFilter;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Result;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Results;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Run;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import org.apache.http.HttpStatus;
@@ -16,6 +20,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,7 +56,7 @@ public class AzureDevOpsClientGlassfish implements Loggable {
     }
 
     public Run getRun(int id) {
-        Response response = this.getBuilder("test/runs/" + id).get(Response.class);
+        Response response = this.getBuilder("test/runs/" + id).get();
 
         if (response.getStatus() != HttpStatus.SC_OK) {
             ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
@@ -63,34 +68,18 @@ public class AzureDevOpsClientGlassfish implements Loggable {
         return null;
     }
 
-    //    public Run getRun(int id) {
-//        ClientResponse response = this.getBuilder(this.config.getAzureApiRoot() + "test/runs/" + id).get(ClientResponse.class);
-//
-//        if (response.getStatus() != HttpStatus.SC_OK) {
-//            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
-//            log().error(errorResponse.getMessage());
-//        } else {
-//            return response.getEntity(Run.class);
-//        }
-//
-//        return null;
-//    }
-//
-//    public Run createRun(Run run) {
-//        ClientResponse response = this.getBuilder(
-//                this.config.getAzureApiRoot() + "test/runs/",
-//                this.getApiVersion()
-//        ).post(ClientResponse.class, run);
-//
-//        if (response.getStatus() != HttpStatus.SC_OK) {
-//            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
-//            log().error(errorResponse.getMessage());
-//        } else {
-//            return response.getEntity(Run.class);
-//        }
-//        return null;
-//    }
-//
+    public Run createRun(Run run) {
+        Response response = this.getBuilder("test/runs/", this.getApiVersion()).post(Entity.entity(run, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() != HttpStatus.SC_OK) {
+            ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
+            log().error(errorResponse.getMessage());
+        } else {
+            return response.readEntity(Run.class);
+        }
+        return null;
+    }
+
     public Run updateRun(Run run) {
         // PATCH is not supported with a method --> need to build 'manually'
         Response response = this.getBuilder("test/runs/" + run.getId(), this.getApiVersion())
@@ -106,56 +95,35 @@ public class AzureDevOpsClientGlassfish implements Loggable {
         return null;
     }
 
-    //
-//    public Points getPoints(PointsFilter filter) {
-//        Points points = new Points();
-//        points.setPointsFilter(filter);
-//
-//        ClientResponse response = this.getBuilder(
-//                this.config.getAzureApiRoot() + "test/points",
-//                this.getApiVersion(this.config.getAzureApiVersionGetPoints())
-//        ).post(ClientResponse.class, points);
-//
-//        if (response.getStatus() != HttpStatus.SC_OK) {
-//            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
-//            log().error(errorResponse.getMessage());
-//        } else {
-//            return response.getEntity(Points.class);
-//        }
-//
-//        return null;
-//    }
-//
-//    public Results addResult(List<Result> resultList, final int testRunId) {
-//        ClientResponse response = this.getBuilder(
-//                this.config.getAzureApiRoot() + "test/runs/" + testRunId + "/results",
-//                this.getApiVersion()
-//        ).post(ClientResponse.class, resultList);
-//
-//        if (response.getStatus() != HttpStatus.SC_OK) {
-//            ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
-//            log().error(errorResponse.getMessage());
-//        } else {
-//            return response.getEntity(Results.class);
-//        }
-//
-//        return null;
-//    }
-//
-//    private WebResource.Builder getBuilder(String path) {
-//        return this.getBuilder(path, null);
-//    }
-//
-//    private WebResource.Builder getBuilder(String path, MultivaluedMap<String, String> params) {
-//        WebResource webResource = client.resource(this.config.getAzureUrl());
-//        if (params != null) {
-//            webResource = webResource.queryParams(params);
-//        }
-//        WebResource.Builder builder = webResource.path(path).type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
-//        builder.header(HttpHeaders.AUTHORIZATION, "Basic " + this.config.getAzureAuthenticationString());
-//        return builder;
-//    }
-//
+    public Points getPoints(PointsFilter filter) {
+        Points points = new Points();
+        points.setPointsFilter(filter);
+
+        Response response = this.getBuilder("test/points", this.getApiVersion(this.config.getAzureApiVersionGetPoints())).post(Entity.entity(points, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() != HttpStatus.SC_OK) {
+            ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
+            log().error(errorResponse.getMessage());
+        } else {
+            return response.readEntity(Points.class);
+        }
+
+        return null;
+    }
+
+    public Results addResult(List<Result> resultList, final int testRunId) {
+        Response response = this.getBuilder("test/runs/" + testRunId + "/results", this.getApiVersion()).post(Entity.entity(resultList, MediaType.APPLICATION_JSON));
+
+        if (response.getStatus() != HttpStatus.SC_OK) {
+            ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
+            log().error(errorResponse.getMessage());
+        } else {
+            return response.readEntity(Results.class);
+        }
+
+        return null;
+    }
+
     private Invocation.Builder getBuilder(String path) {
         return this.getBuilder(path, null);
     }
