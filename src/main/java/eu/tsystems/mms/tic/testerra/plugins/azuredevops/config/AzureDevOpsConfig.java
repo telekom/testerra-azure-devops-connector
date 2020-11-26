@@ -36,11 +36,11 @@ import java.util.Base64;
  *
  * @author mgn
  */
-public class AzureDoConfig implements Loggable {
+public class AzureDevOpsConfig implements Loggable {
 
     private static final String FILE_NAME = "azuredevops.properties";
 
-    private static AzureDoConfig instance = null;
+    private static AzureDevOpsConfig instance = null;
 
     private String azureUrl;
 
@@ -62,7 +62,7 @@ public class AzureDoConfig implements Loggable {
 
     private String azureRunName;
 
-    private AzureDoConfig() {
+    private AzureDevOpsConfig() {
         PropertyManager.loadProperties(FILE_NAME);
 
         this.azureUrl = PropertyManager.getProperty("azure.url");
@@ -82,9 +82,9 @@ public class AzureDoConfig implements Loggable {
         this.checkProperties();
     }
 
-    public static synchronized AzureDoConfig getInstance() {
+    public static synchronized AzureDevOpsConfig getInstance() {
         if (instance == null) {
-            instance = new AzureDoConfig();
+            instance = new AzureDevOpsConfig();
         }
         return instance;
     }

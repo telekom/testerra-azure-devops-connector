@@ -23,7 +23,7 @@
 package eu.tsystems.mms.tic.testerra.plugins.azuredevops.synchronize;
 
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.annotation.AzureTest;
-import eu.tsystems.mms.tic.testerra.plugins.azuredevops.config.AzureDoConfig;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.config.AzureDevOpsConfig;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Outcome;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Point;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Points;
@@ -47,15 +47,15 @@ import java.util.Optional;
  *
  * @author mgn
  */
-public class AzureDevopsResultSynchronizer extends AbstractCommonSynchronizer implements Loggable {
+public class AzureDevOpsResultSynchronizer extends AbstractCommonSynchronizer implements Loggable {
 
     private AzureDevOpsClient client = null;
 
-    private AzureDoConfig config = null;
+    private AzureDevOpsConfig config = null;
 
     private int currentRunId = 0;
 
-    public AzureDevopsResultSynchronizer() {
+    public AzureDevOpsResultSynchronizer() {
         this.init();
     }
 
@@ -120,7 +120,7 @@ public class AzureDevopsResultSynchronizer extends AbstractCommonSynchronizer im
     }
 
     private void init() {
-        this.config = AzureDoConfig.getInstance();
+        this.config = AzureDevOpsConfig.getInstance();
 
         if (this.config.isAzureSyncEnabled()) {
             log().info("Start test result sync with Azure DevOps at " + this.config.getAzureUrl());

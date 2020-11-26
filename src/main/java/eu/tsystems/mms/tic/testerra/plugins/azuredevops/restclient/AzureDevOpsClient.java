@@ -22,7 +22,7 @@
 
 package eu.tsystems.mms.tic.testerra.plugins.azuredevops.restclient;
 
-import eu.tsystems.mms.tic.testerra.plugins.azuredevops.config.AzureDoConfig;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.config.AzureDevOpsConfig;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.ErrorResponse;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Points;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.PointsFilter;
@@ -52,13 +52,13 @@ import java.util.Map;
  */
 public class AzureDevOpsClient implements Loggable {
 
-    private final AzureDoConfig config;
+    private final AzureDevOpsConfig config;
 
     private final Client client;
 
     public AzureDevOpsClient() {
 
-        this.config = AzureDoConfig.getInstance();
+        this.config = AzureDevOpsConfig.getInstance();
 
         // AzureDevOps API also uses the REST method 'PATCH'
         // To use it in Jensey, you need to activate 'SET_METHOD_WORKAROUND'
