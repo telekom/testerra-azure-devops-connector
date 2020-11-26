@@ -60,11 +60,14 @@ public class AzureDevOpsClient implements Loggable {
 
         if (response.getStatus() != HttpStatus.SC_OK) {
             ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
+//            Run run = new Run();
+//            run.setErrorResponse(errorResponse);
+            log().error("Cannot get run: " + response.getStatus());
             log().error(errorResponse.getMessage());
+//            return run;
         } else {
             return response.readEntity(Run.class);
         }
-
         return null;
     }
 
@@ -73,8 +76,10 @@ public class AzureDevOpsClient implements Loggable {
 
         if (response.getStatus() != HttpStatus.SC_OK) {
             ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
+            log().error("Cannot create run: " + response.getStatus());
             log().error(errorResponse.getMessage());
         } else {
+            log().info("New run was created successfully.");
             return response.readEntity(Run.class);
         }
         return null;
@@ -88,11 +93,20 @@ public class AzureDevOpsClient implements Loggable {
 
         if (response.getStatus() != HttpStatus.SC_OK) {
             ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
+            log().error("Cannot update run: " + response.getStatus());
             log().error(errorResponse.getMessage());
         } else {
+            log().info("Run was updated successfully.");
             return response.readEntity(Run.class);
         }
         return null;
+    }
+
+    public Points getPointsByTestCaseFilter(final int testcaseId) {
+        PointsFilter pointsFilter = new PointsFilter();
+        pointsFilter.addTestcaseId(testcaseId);
+
+        return this.getPoints(pointsFilter);
     }
 
     public Points getPoints(PointsFilter filter) {
@@ -103,6 +117,7 @@ public class AzureDevOpsClient implements Loggable {
 
         if (response.getStatus() != HttpStatus.SC_OK) {
             ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
+            log().error("Cannot get point: " + response.getStatus());
             log().error(errorResponse.getMessage());
         } else {
             return response.readEntity(Points.class);
@@ -116,8 +131,10 @@ public class AzureDevOpsClient implements Loggable {
 
         if (response.getStatus() != HttpStatus.SC_OK) {
             ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);
+            log().error("Cannot add result: " + response.getStatus());
             log().error(errorResponse.getMessage());
         } else {
+            log().info("Test result was added successfully.");
             return response.readEntity(Results.class);
         }
 

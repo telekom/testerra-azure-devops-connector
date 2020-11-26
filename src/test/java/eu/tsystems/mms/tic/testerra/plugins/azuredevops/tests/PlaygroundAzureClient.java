@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author mgn
  */
-public class DemoTest extends TesterraTest {
+public class PlaygroundAzureClient extends TesterraTest {
 
     @Test
     public void test_GetProject() {

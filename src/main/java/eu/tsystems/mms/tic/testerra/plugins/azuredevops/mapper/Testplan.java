@@ -7,4 +7,13 @@ package eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper;
  */
 //@JsonIgnoreProperties(ignoreUnknown = true)
 public class Testplan extends BasicObject {
+
+    public Testplan() {
+
+    }
+
+    public Testplan(int id) {
+        this.setId(id);
+    }
+
 }

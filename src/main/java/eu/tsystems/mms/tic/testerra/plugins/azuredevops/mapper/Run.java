@@ -10,7 +10,6 @@ import java.util.Date;
  *
  * @author mgn
  */
-//@JsonIgnoreProperties(ignoreUnknown = true)
 public class Run extends BasicObject implements Loggable {
 
     private Testplan plan;

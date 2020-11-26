@@ -11,6 +11,10 @@ public class BasicObject {
 
     private String name;
 
+//    // ErrorResponse does not belong to Azure DevOps REST API
+//    // It's used to store failed requests in returned objects.
+//    private ErrorResponse errorResponse;
+
     public BasicObject() {
 
     }
@@ -30,4 +34,12 @@ public class BasicObject {
     public void setName(String name) {
         this.name = name;
     }
+
+//    public ErrorResponse getErrorResponse() {
+//        return errorResponse;
+//    }
+//
+//    public void setErrorResponse(ErrorResponse errorResponse) {
+//        this.errorResponse = errorResponse;
+//    }
 }
