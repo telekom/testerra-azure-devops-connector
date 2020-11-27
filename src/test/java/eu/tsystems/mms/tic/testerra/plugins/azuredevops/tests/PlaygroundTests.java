@@ -22,12 +22,15 @@
 
 package eu.tsystems.mms.tic.testerra.plugins.azuredevops.tests;
 
-
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.annotation.AzureTest;
+import eu.tsystems.mms.tic.testframework.annotations.Fails;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.lang.reflect.Method;
 
 /**
  * Created on 26.11.2020
@@ -36,11 +39,26 @@ import org.testng.annotations.Test;
  */
 public class PlaygroundTests extends TesterraTest {
 
+//    @BeforeMethod
+//    public void beforeMethod(Method method) {
+//        if (method.getName().contains("02")) {
+//            Assert.fail();
+//        }
+//    }
+
     @Test
     @AzureTest(id = 2257)
     public void test_Passed01() {
         TimerUtils.sleep(5555, "Wait some time...");
         Assert.assertTrue(true);
+    }
+
+    @Test
+    @AzureTest(id = 2284)
+//    @Fails(description = "Das ist halt ein alter Bug.")
+    public void test_Passed02() {
+        TimerUtils.sleep(5555, "Wait some time...");
+        Assert.assertTrue(false, "Mega exception");
     }
 
 }

@@ -34,6 +34,7 @@ dependencies {
     implementation 'com.owlike:genson:1.6'
 
     testImplementation 'eu.tsystems.mms.tic.testerra:core:' + testerraTestVersion
+    testImplementation 'eu.tsystems.mms.tic.testerra:report:' + testerraTestVersion
 
 }
 

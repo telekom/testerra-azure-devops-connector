@@ -24,6 +24,7 @@ package eu.tsystems.mms.tic.testerra.plugins.azuredevops.synchronize;
 
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.annotation.AzureTest;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.config.AzureDevOpsConfig;
+import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.FailureType;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Outcome;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Point;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Points;
@@ -32,9 +33,12 @@ import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Run;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.RunState;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Testplan;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.restclient.AzureDevOpsClient;
+import eu.tsystems.mms.tic.testframework.annotations.Fails;
 import eu.tsystems.mms.tic.testframework.connectors.util.AbstractCommonSynchronizer;
 import eu.tsystems.mms.tic.testframework.events.MethodEndEvent;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.report.FailureCorridor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 import java.time.Instant;
@@ -62,8 +66,63 @@ public class AzureDevOpsResultSynchronizer extends AbstractCommonSynchronizer im
     @Override
     protected void pOnTestSuccess(MethodEndEvent event) {
         log().info("Method " + event.getTestMethod().getMethodName() + " passed");
+        this.syncTestresult(event, Outcome.PASSED);
+    }
+
+    @Override
+    protected void pOnTestFailure(MethodEndEvent event) {
+        log().info("Method " + event.getTestMethod().getMethodName() + " failed");
+        // Only the last execution of a failed tests is synced
+        // Otherwise the run contains more results of the same test method.
+        this.syncTestresult(event, Outcome.FAILED);
+
+    }
+
+    @Override
+    protected void pOnTestSkip(MethodEndEvent event) {
+        log().info("Method " + event.getTestMethod().getMethodName() + " skipped");
+        this.syncTestresult(event, Outcome.NOT_EXECUTED);
+    }
+
+    private void init() {
+        this.config = AzureDevOpsConfig.getInstance();
+
+        if (this.config.isAzureSyncEnabled()) {
+            log().info("Start test result sync with Azure DevOps at " + this.config.getAzureUrl());
+
+            this.client = new AzureDevOpsClient();
+
+            // Initialize a new run at Azure DevOps
+            Testplan testplan = new Testplan(this.config.getAzureTestPlanId());
+            Run run = new Run();
+            run.setPlan(testplan);
+            run.setName(this.config.getAzureRunName());
+            run.setState(RunState.IN_PROGRESS.toString());
+            run.setStartedDate(Instant.now().toString());
+
+            Run createdRun = this.client.createRun(run);
+            if (createdRun != null && createdRun.getId() != null) {
+                this.currentRunId = createdRun.getId();
+            } else {
+                log().error("Cannot create test run, sync will be deactivated.");
+                this.config.deactivateResultSync();
+            }
+        } else {
+            log().info("Azure DevOps connector is attached but result sync is disabled.");
+        }
+    }
+
+    /**
+     * Main method to sync the results of a test method with Azure DevOps.
+     * <p>
+     * Valid results are Passed, Failed and Skipped
+     *
+     * @param event
+     * @param outcome
+     */
+    private synchronized void syncTestresult(MethodEndEvent event, Outcome outcome) {
         AzureTest annotation = this.getAnnotation(event);
-        if (annotation != null && annotation.enabled()) {
+        if (this.config.isAzureSyncEnabled() && annotation != null && annotation.enabled()) {
 
             Points points = this.client.getPointsByTestCaseFilter(annotation.id());
             if (points.getPoints().size() > 0) {
@@ -72,12 +131,23 @@ public class AzureDevOpsResultSynchronizer extends AbstractCommonSynchronizer im
                 Optional<Point> optionalPoint = points.getPoints().stream().filter(point -> this.config.getAzureTestPlanId() == point.getTestPlan().getId()).findFirst();
                 if (optionalPoint.isPresent()) {
 
-                    // Create a new test result
+                    // Create a new test result based on current test method
                     Result result = new Result();
                     result.setTestPoint(optionalPoint.get());
-                    result.setStartedDate(event.getMethodContext().executionContext.getStartTime().toInstant().toString());
-                    result.setCompletedDate(event.getMethodContext().executionContext.getEndTime().toInstant().toString());
-                    result.setOutcome(Outcome.PASSED.toString());
+                    if (!outcome.equals(Outcome.NOT_EXECUTED)) {
+                        result.setStartedDate(event.getMethodContext().executionContext.getStartTime().toInstant().toString());
+                        result.setCompletedDate(event.getMethodContext().executionContext.getEndTime().toInstant().toString());
+                    }
+                    result.setOutcome(outcome.toString());
+                    // Priority is taken from test case, cannot change with test result
+//                    result.setPriority(this.getPriorityByFailureCorridor(event.getMethodContext().failureCorridorValue));
+
+                    if (outcome.equals(Outcome.FAILED)) {
+                        result.setErrorMessage(event.getMethodContext().errorContext().readableErrorMessage);
+                        result.setFailureType(this.getFailureType(event).toString());
+                        result.setStackTrace(event.getMethodContext().errorContext().getStackTrace().toString());
+                    }
+
                     List<Result> resultList = new ArrayList<>();
                     resultList.add(result);
                     this.client.addResult(resultList, this.currentRunId);
@@ -107,44 +177,6 @@ public class AzureDevOpsResultSynchronizer extends AbstractCommonSynchronizer im
         }
     }
 
-    @Override
-    protected void pOnTestFailure(MethodEndEvent event) {
-        log().info("Method " + event.getTestMethod().getMethodName() + " failed");
-//        event.getMethodContext().retryNumber == max-retry
-
-    }
-
-    @Override
-    protected void pOnTestSkip(MethodEndEvent event) {
-        log().info("Method " + event.getTestMethod().getMethodName() + " skipped");
-    }
-
-    private void init() {
-        this.config = AzureDevOpsConfig.getInstance();
-
-        if (this.config.isAzureSyncEnabled()) {
-            log().info("Start test result sync with Azure DevOps at " + this.config.getAzureUrl());
-
-            this.client = new AzureDevOpsClient();
-
-            // Initialize a new run at Azure DevOps
-            Testplan testplan = new Testplan(this.config.getAzureTestPlanId());
-            Run run = new Run();
-            run.setPlan(testplan);
-            run.setName(this.config.getAzureRunName());
-            run.setState(RunState.IN_PROGRESS.toString());
-            run.setStartedDate(Instant.now().toString());
-
-            Run createdRun = this.client.createRun(run);
-            if (createdRun != null && createdRun.getId() != null) {
-                this.currentRunId = createdRun.getId();
-            } else {
-                log().error("Cannot create test run, sync will be deactivated.");
-                this.config.deactivateResultSync();
-            }
-        }
-    }
-
     public void shutdown() {
         if (this.config.isAzureSyncEnabled()) {
             log().info("Finalize result sync with Azure DevOps");
@@ -163,12 +195,35 @@ public class AzureDevOpsResultSynchronizer extends AbstractCommonSynchronizer im
     }
 
     private AzureTest getAnnotation(MethodEndEvent event) {
-        final Method javaMethod = event.getTestResult().getMethod().getConstructorOrMethod().getMethod();
-        if (javaMethod.isAnnotationPresent(AzureTest.class)) {
-            return javaMethod.getAnnotation(AzureTest.class);
+        final Method method = event.getTestResult().getMethod().getConstructorOrMethod().getMethod();
+        if (method.isAnnotationPresent(AzureTest.class)) {
+            return method.getAnnotation(AzureTest.class);
         } else {
             log().info("No annoation found for sync results with Azure DevOps");
             return null;
         }
     }
+
+    private int getPriorityByFailureCorridor(FailureCorridor.Value value) {
+        switch (value) {
+            case HIGH:
+                return 1;
+            case MID:
+                return 2;
+            case LOW:
+                return 3;
+            default:
+                return 1;
+        }
+    }
+
+    private FailureType getFailureType(MethodEndEvent event) {
+        final Method method = event.getTestResult().getMethod().getConstructorOrMethod().getMethod();
+        if (method.isAnnotationPresent(Fails.class)) {
+            return FailureType.KNOWN_ISSUE;
+        } else {
+            return FailureType.NEW_ISSUE;
+        }
+    }
+
 }
