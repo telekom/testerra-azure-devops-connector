@@ -65,11 +65,11 @@ public class AzureDevOpsConfig implements Loggable {
     private AzureDevOpsConfig() {
         PropertyManager.loadProperties(FILE_NAME);
 
-        this.azureUrl = PropertyManager.getProperty("azure.url");
+        this.azureUrl = PropertyManager.getProperty("azure.url") + "/";
         this.azureUser = PropertyManager.getProperty("azure.user");
         this.azureUserToken = PropertyManager.getProperty("azure.token");
         this.azureSyncEnabled = PropertyManager.getBooleanProperty("azure.sync.enabled", false);
-        this.azureApiRoot = PropertyManager.getProperty("azure.project.root");
+        this.azureApiRoot = PropertyManager.getProperty("azure.project.root") + "/";
         this.azureApiVersion = PropertyManager.getProperty("azure.api.version");
         this.azureApiVersionGetPoints = PropertyManager.getProperty("azure.api.version.get.points", this.azureApiVersion);
 
