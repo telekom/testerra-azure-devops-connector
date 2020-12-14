@@ -4,6 +4,8 @@ This module for Testerra provides a simple synchronization service for Microsoft
 
 It will register automatically by using Testerra `ModuleHook`, but you have to provide a valid property file its usage.
 
+---
+
 ## Usage
 
 ### Dependencies
@@ -27,7 +29,17 @@ Maven:
 </dependency>
 ````
 
-### Add property file
+### Test method mapping
+
+````java
+@Test
+@AzureTest(id = 2257)
+public void test_case_01() {
+    ...
+}
+````
+
+### Properties
 
 Add the property file ``azuredevops.properties`` and add project specific settings.
 
@@ -43,12 +55,34 @@ Add the property file ``azuredevops.properties`` and add project specific settin
 | azure.testplan.id | na. | Define the test plan where your test cases are added. |
 | azure.run.name | Current timestamp | Define a custom name for the test run. |
 
-### Add test method mapping
+---
 
-````java
-@Test
-@AzureTest(id = 2257)
-public void test_case_01() {
-    ...
-}
-````
+
+## Publication
+
+### ... to a Maven repo
+
+```sh
+gradle publishToMavenLocal
+```
+
+or pass then properties via. CLI
+
+```sh
+gradle publish -DdeployUrl=<repo-url> -DdeployUsername=<repo-user> -DdeployPassword=<repo-password>
+```
+
+Set a custom version
+
+```shell script
+gradle publish -DmoduleVersion=<version>
+```
+
+### ... to Bintray
+
+Upload and publish this module to Bintray:
+
+````sh
+gradle bintrayUpload -DmoduleVersion=<version> -DBINTRAY_USER=<bintray-user> -DBINTRAY_API_KEY=<bintray-api-key>
+```` 
+
