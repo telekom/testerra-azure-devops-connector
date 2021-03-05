@@ -1,15 +1,10 @@
-plugins {
-    id "com.jfrog.bintray" version "1.8.5"
-}
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-apply from: rootProject.file('release-bintray.gradle')
-
 ext {
     // Minimum required Testerra version
-    testerraCompileVersion = '1.0-RC-16'
+    testerraCompileVersion = '1.0-RC-30'
     // Unit tests use the latest Testerra version
     testerraTestVersion = '[1.0-RC,2-SNAPSHOT)'
 
@@ -23,9 +18,15 @@ ext {
     version moduleVersion
 }
 
+// Do not move this integration because `group` and `version` is needed for publishing
+apply from: rootProject.file('publish.gradle')
+
 dependencies {
     compileOnly 'eu.tsystems.mms.tic.testerra:core:' + testerraCompileVersion
     implementation 'eu.tsystems.mms.tic.testerra:surefire-connector:' + testerraCompileVersion
+
+    implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation 'org.apache.httpcomponents:httpcore:4.4.13'
 
     implementation 'org.glassfish.jersey.core:jersey-client:2.32'
     implementation 'org.glassfish.jersey.inject:jersey-hk2:2.32'

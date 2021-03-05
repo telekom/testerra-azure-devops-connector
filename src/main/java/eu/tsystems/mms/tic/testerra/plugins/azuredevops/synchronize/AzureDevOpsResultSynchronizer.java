@@ -38,6 +38,7 @@ import eu.tsystems.mms.tic.testframework.connectors.util.AbstractCommonSynchroni
 import eu.tsystems.mms.tic.testframework.events.MethodEndEvent;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.report.FailureCorridor;
+import eu.tsystems.mms.tic.testframework.report.model.context.ErrorContext;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
@@ -135,17 +136,19 @@ public class AzureDevOpsResultSynchronizer extends AbstractCommonSynchronizer im
                     Result result = new Result();
                     result.setTestPoint(optionalPoint.get());
                     if (!outcome.equals(Outcome.NOT_EXECUTED)) {
-                        result.setStartedDate(event.getMethodContext().executionContext.getStartTime().toInstant().toString());
-                        result.setCompletedDate(event.getMethodContext().executionContext.getEndTime().toInstant().toString());
+                        result.setStartedDate(event.getMethodContext().getStartTime().toInstant().toString());
+                        result.setCompletedDate(event.getMethodContext().getEndTime().toInstant().toString());
                     }
                     result.setOutcome(outcome.toString());
                     // Priority is taken from test case, cannot change with test result
 //                    result.setPriority(this.getPriorityByFailureCorridor(event.getMethodContext().failureCorridorValue));
 
                     if (outcome.equals(Outcome.FAILED)) {
-                        result.setErrorMessage(event.getMethodContext().errorContext().readableErrorMessage);
+                        ErrorContext errorContext = event.getMethodContext().getErrorContext();
+                        final String errorMessage = StringUtils.isNotEmpty(errorContext.getDescription()) ? errorContext.getDescription() : errorContext.getThrowable().getMessage();
+                        result.setErrorMessage(errorMessage);
                         result.setFailureType(this.getFailureType(event).toString());
-                        result.setStackTrace(event.getMethodContext().errorContext().getStackTrace().toString());
+                        result.setStackTrace(event.getMethodContext().getErrorContext().getThrowable().getStackTrace().toString());
                     }
 
                     List<Result> resultList = new ArrayList<>();

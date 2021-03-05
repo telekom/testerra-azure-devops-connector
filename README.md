@@ -8,10 +8,11 @@ It will register automatically by using Testerra `ModuleHook`, but you have to p
 
 ## Usage
 
-### Dependencies
+### Requirements
 
-* Latest version: `1-SNAPSHOT`
-* Required Testerra version: `1-0-RC-16`
+This module requires Testerra version `1-0-RC-16`.
+
+### Dependencies
 
 Include the following dependency in your project.
 
@@ -38,6 +39,31 @@ public void test_case_01() {
     ...
 }
 ````
+
+## Publication
+
+### ... to a Maven repo
+
+_Publishing to local repo_
+```shell
+gradle publishToMavenLocal
+```
+
+_Publishing to remote repo_
+```shell
+gradle publish -DdeployUrl=<repo-url> -DdeployUsername=<repo-user> -DdeployPassword=<repo-password>
+```
+
+_Set a custom version_
+```shell
+gradle publish -DmoduleVersion=<version>
+```
+### ... to GitHub Packages
+
+Some hints for using GitHub Packages as Maven repository
+
+* Deploy URL is https://maven.pkg.github.com/OWNER/REPOSITRY
+* As password generate an access token and grant permissions to ``write:packages`` (Settings -> Developer settings -> Personal access token)
 
 ### Properties
 
