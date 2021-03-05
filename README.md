@@ -6,19 +6,22 @@ It will register automatically by using Testerra `ModuleHook`, but you have to p
 
 ---
 
+## Releases
+
+* Latest Release: `1.0-RC-1`
+
+
+## Requirements
+
+This module requires Testerra version `1-0-RC-30`.
+
 ## Usage
-
-### Requirements
-
-This module requires Testerra version `1-0-RC-16`.
-
-### Dependencies
 
 Include the following dependency in your project.
 
 Gradle:
 ````groovy
-implementation 'eu.tsystems.mms.tic.testerra:azure-devops-connector:1-SNAPSHOT'
+implementation 'eu.tsystems.mms.tic.testerra:azure-devops-connector:1.0-RC-1'
 ````
 
 Maven:
@@ -26,7 +29,7 @@ Maven:
 <dependency>
     <groupId>eu.tsystems.mms.tic.testerra</groupId>
     <artifactId>azure-devops-connector</artifactId>
-    <version>1-SNAPSHOT</version>
+    <version>1.0-RC-1</version>
 </dependency>
 ````
 
@@ -83,32 +86,27 @@ Add the property file ``azuredevops.properties`` and add project specific settin
 
 ---
 
-
 ## Publication
 
 ### ... to a Maven repo
 
-```sh
+_Publishing to local repo_
+```shell
 gradle publishToMavenLocal
 ```
 
-or pass then properties via. CLI
-
-```sh
+_Publishing to remote repo_
+```shell
 gradle publish -DdeployUrl=<repo-url> -DdeployUsername=<repo-user> -DdeployPassword=<repo-password>
 ```
 
-Set a custom version
-
-```shell script
+_Set a custom version_
+```shell
 gradle publish -DmoduleVersion=<version>
 ```
+### ... to GitHub Packages
 
-### ... to Bintray
+Some hints for using GitHub Packages as Maven repository
 
-Upload and publish this module to Bintray:
-
-````sh
-gradle bintrayUpload -DmoduleVersion=<version> -DBINTRAY_USER=<bintray-user> -DBINTRAY_API_KEY=<bintray-api-key>
-```` 
-
+* Deploy URL is https://maven.pkg.github.com/OWNER/REPOSITRY
+* As password generate an access token and grant permissions to ``write:packages`` (Settings -> Developer settings -> Personal access token)
