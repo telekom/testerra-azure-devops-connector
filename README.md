@@ -13,7 +13,7 @@ It will register automatically by using Testerra `ModuleHook`, but you have to p
 
 ## Requirements
 
-This module requires Testerra version `1-0-RC-30`.
+This module requires Testerra version `1.0-RC-30`.
 
 ## Usage
 
