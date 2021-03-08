@@ -8,7 +8,7 @@ It will register automatically by using Testerra `ModuleHook`, but you have to p
 
 ## Releases
 
-* Latest Release: `1.0-RC-1`
+* Latest Release: `1.0-RC-2`
 
 
 ## Requirements
@@ -21,7 +21,7 @@ Include the following dependency in your project.
 
 Gradle:
 ````groovy
-implementation 'eu.tsystems.mms.tic.testerra:azure-devops-connector:1.0-RC-1'
+implementation 'eu.tsystems.mms.tic.testerra:azure-devops-connector:1.0-RC-2'
 ````
 
 Maven:
@@ -29,7 +29,7 @@ Maven:
 <dependency>
     <groupId>eu.tsystems.mms.tic.testerra</groupId>
     <artifactId>azure-devops-connector</artifactId>
-    <version>1.0-RC-1</version>
+    <version>1.0-RC-2</version>
 </dependency>
 ````
 
