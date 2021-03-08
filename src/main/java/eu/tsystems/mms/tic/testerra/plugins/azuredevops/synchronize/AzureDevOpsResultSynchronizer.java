@@ -40,6 +40,7 @@ import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.report.FailureCorridor;
 import eu.tsystems.mms.tic.testframework.report.model.context.ErrorContext;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.lang.reflect.Method;
 import java.time.Instant;
@@ -148,7 +149,8 @@ public class AzureDevOpsResultSynchronizer extends AbstractCommonSynchronizer im
                         final String errorMessage = StringUtils.isNotEmpty(errorContext.getDescription()) ? errorContext.getDescription() : errorContext.getThrowable().getMessage();
                         result.setErrorMessage(errorMessage);
                         result.setFailureType(this.getFailureType(event).toString());
-                        result.setStackTrace(event.getMethodContext().getErrorContext().getThrowable().getStackTrace().toString());
+                        final String stackTrace = ExceptionUtils.getStackTrace(event.getMethodContext().getErrorContext().getThrowable());
+                        result.setStackTrace(stackTrace);
                     }
 
                     List<Result> resultList = new ArrayList<>();
