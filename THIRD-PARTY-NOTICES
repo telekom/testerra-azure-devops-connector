@@ -9,3 +9,46 @@ to our attention by contacting us via an GitHub issue.
 
 Components:
 -----------
+
+Component: 	eu.tsystems.mms.tic.testerra.driver-ui-desktop
+Version:	1.0-RC-30
+Website:   	https://testerra.io
+Repository:	https://github.com/telekom/testerra
+License:   	Apache-2.0
+
+Component: 	eu.tsystems.mms.tic.testerra.surefire-connector
+Version:	1.0-RC-30
+Website:   	https://testerra.io
+Repository:	https://github.com/telekom/testerra
+License:   	Apache-2.0
+
+Component: 	org.apache.commons.commons-lang3
+Version:	3.9
+Website:   	http://commons.apache.org/proper/commons-lang/
+Repository:	https://gitbox.apache.org/repos/asf?p=commons-lang.git
+License:   	Apache 2.0
+
+Component: 	org.apache.httpcomponents.httpcore 
+Version:	4.4.13
+Website:   	http://hc.apache.org/httpcomponents-core-4.4.x/index.html
+Repository:	https://github.com/apache/httpcomponents-client
+License:   	Apache 2.0
+
+Component: 	org.glassfish.jersey.core.jersey-client
+Version:	2.32
+Website:   	https://projects.eclipse.org/projects/ee4j.jersey
+Repository:	https://github.com/eclipse-ee4j/jersey
+License:   	EPL 2.0
+
+Component: 	org.glassfish.jersey.inject.jersey-hk2
+Version:	2.32
+Website:   	https://projects.eclipse.org/projects/ee4j.jersey
+Repository:	https://github.com/eclipse-ee4j/jersey
+License:   	EPL 2.0
+
+
+Component: 	com.owlike.genson
+Version:	1.6
+Website:   	http://genson.io/
+Repository:	https://github.com/owlike/genson
+License:   	Apache 2.0
