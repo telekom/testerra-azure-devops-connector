@@ -9,7 +9,6 @@
 <p align="center">
   <a href="#installation">Installation</a> •
   <a href="#documentation">Documentation</a> •
-  <a href="#development">Development</a> •
   <a href="#support-and-feedback">Support</a> •
   <a href="#how-to-contribute">Contribute</a> •
   <a href="#contributors">Contributors</a> •
@@ -18,17 +17,19 @@
 
 ## About this module
 
-This module for Testerra provides a simple synchronization service for Microsoft AzureDevOps platform.
+This module provides additional features for [Testerra Framework](https://github.com/telekom/testerra) for automated tests.
+
+This module provides a simple synchronization service for Microsoft AzureDevOps platform.
 
 It will register automatically by using Testerra `ModuleHook`, but you have to provide a valid property file its usage.
 
----
+## Setup
 
-## Requirements
+### Requirements
 
-This module requires Testerra version `1.0-RC-30`.
+* Testerra in Version: `1.0-RC-30`
 
-## Usage
+### Usage
 
 Include the following dependency in your project.
 
@@ -46,15 +47,7 @@ Maven:
 </dependency>
 ````
 
-### Test method mapping
-
-````java
-@Test
-@AzureTest(id = 2257)
-public void test_case_01() {
-    ...
-}
-````
+## Documentation
 
 ### Properties
 
@@ -71,6 +64,18 @@ Add the property file ``azuredevops.properties`` and add project specific settin
 | azure.api.version.get.points | azure.api.version | In some cases the endpoint for getting the test points differs from general API version, e.g. `5.1-preview.2` |
 | azure.testplan.id | na. | Define the test plan where your test cases are added. |
 | azure.run.name | Current timestamp | Define a custom name for the test run. |
+
+### Test method mapping
+
+Map your tests with the corresponding AzureDevops ticket id.
+
+````java
+@Test
+@AzureTest(id = 2257)
+public void test_case_01() {
+    ...
+}
+````
 
 ---
 
@@ -99,10 +104,6 @@ Some hints for using GitHub Packages as Maven repository
 * Deploy URL is https://maven.pkg.github.com/OWNER/REPOSITRY
 * As password generate an access token and grant permissions to ``write:packages`` (Settings -> Developer settings -> Personal access token)
 
-## Documentation
-
-Check out our comprehensive [Testerra documentation](http://docs.testerra.io)!
-
 ## Code of Conduct
 
 This project has adopted the [Contributor Covenant](https://www.contributor-covenant.org/) in version 2.0 as our code of conduct. Please see the details in our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). All contributors must abide by the code of conduct.
@@ -122,15 +123,6 @@ The following channels are available for discussions, feedback, and support requ
 | ------------------------ | ------------------------------------------------------ |
 | **Issues**   | <a href="/../../issues/new/choose" title="Issues"><img src="https://img.shields.io/github/issues/telekom/testerra-azure-devops-connector?style=flat"></a> |
 | **Other Requests**    | <a href="mailto:testerra@t-systems-mms.com" title="Email us"><img src="https://img.shields.io/badge/email-CWA%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
-
-
-## Repositories
-
-| Repository          | Description                                                           |
-| ------------------- | --------------------------------------------------------------------- |
-| [testerra] | Testerra |
-
-[testerra]: https://github.com/telekom/testerra
 
 ## How to Contribute
 
