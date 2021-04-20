@@ -5,3 +5,5 @@
 /gradlew
 /gradlew.bat
 /test-report/
+/src/test/resources/system.properties
+/src/test/resources/azuredevops.properties

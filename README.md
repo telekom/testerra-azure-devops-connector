@@ -36,17 +36,19 @@ Include the following dependency in your project.
 
 Gradle:
 ````groovy
-implementation 'eu.tsystems.mms.tic.testerra:azure-devops-connector:1.0'
+implementation 'io.testerra:azure-devops-connector:1.0'
 ````
 
 Maven:
 ````xml
 <dependency>
-    <groupId>eu.tsystems.mms.tic.testerra</groupId>
+    <groupId>io.testerra</groupId>
     <artifactId>azure-devops-connector</artifactId>
     <version>1.0</version>
 </dependency>
 ````
+
+***Important note:*** This modul is not compatible with the Testerra legacy report (`report` module). Please always use `report-ng`.
 
 ## Documentation
 

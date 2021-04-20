@@ -41,7 +41,7 @@ dependencies {
     implementation 'com.owlike:genson:1.6'
 
     testImplementation 'io.testerra:core:' + testerraTestVersion
-    testImplementation 'io.testerra:report:' + testerraTestVersion
+    testImplementation 'io.testerra:report-ng:' + testerraTestVersion
 
 }
 
