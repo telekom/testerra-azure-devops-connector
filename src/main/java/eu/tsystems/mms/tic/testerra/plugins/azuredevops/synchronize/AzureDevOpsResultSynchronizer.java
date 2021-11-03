@@ -215,16 +215,6 @@ public class AzureDevOpsResultSynchronizer extends AbstractCommonSynchronizer im
         }
     }
 
-    private int getPriorityByFailureCorridor(Class failureCorridorClass) {
-        if (failureCorridorClass == FailureCorridor.Mid.class) {
-            return 2;
-        } else if (failureCorridorClass == FailureCorridor.Low.class) {
-            return 3;
-        } else {
-            return 1;
-        }
-    }
-
     private FailureType getFailureType(MethodEndEvent event) {
         final Method method = event.getTestResult().getMethod().getConstructorOrMethod().getMethod();
         if (method.isAnnotationPresent(Fails.class)) {
