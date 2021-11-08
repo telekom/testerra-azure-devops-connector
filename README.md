@@ -28,7 +28,10 @@ It will register automatically by using Testerra `ModuleHook`, but you have to p
 
 ### Requirements
 
-![Maven Central](https://img.shields.io/maven-central/v/io.testerra/core/1.0-RC-32?label=Testerra)
+
+| Azure devops connector   | Testerra      |
+| -------------------- | --------------|
+| `1.0`          | `>= 1.9`  |
 
 ### Usage
 
@@ -48,7 +51,7 @@ Maven:
 </dependency>
 ````
 
-***Important note:*** This modul is not compatible with the Testerra legacy report (`report` module). Please always use `report-ng`.
+***Important note:*** This module is not compatible with the Testerra legacy report (`report` module). Please always use `report-ng`.
 
 ## Documentation
 
