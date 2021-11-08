@@ -145,12 +145,18 @@ public class AzureDevOpsResultSynchronizer extends AbstractCommonSynchronizer im
 //                    result.setPriority(this.getPriorityByFailureCorridor(event.getMethodContext().failureCorridorValue));
 
                     if (outcome.equals(Outcome.FAILED)) {
-                        ErrorContext errorContext = event.getMethodContext().getErrorContext();
-                        final String errorMessage = StringUtils.isNotEmpty(errorContext.getDescription()) ? errorContext.getDescription() : errorContext.getThrowable().getMessage();
-                        result.setErrorMessage(errorMessage);
-                        result.setFailureType(this.getFailureType(event).toString());
-                        final String stackTrace = ExceptionUtils.getStackTrace(event.getMethodContext().getErrorContext().getThrowable());
-                        result.setStackTrace(stackTrace);
+                        event.getMethodContext()
+                                .readErrors()
+                                .filter(ErrorContext::isNotOptional)
+                                .findFirst()
+                                .ifPresent(errorContext -> {
+                                    Throwable throwable = errorContext.getThrowable();
+                                    final String errorMessage = throwable.getMessage();
+                                    result.setErrorMessage(errorMessage);
+                                    result.setFailureType(this.getFailureType(event).toString());
+                                    final String stackTrace = ExceptionUtils.getStackTrace(throwable);
+                                    result.setStackTrace(stackTrace);
+                                });
                     }
 
                     List<Result> resultList = new ArrayList<>();
@@ -206,19 +212,6 @@ public class AzureDevOpsResultSynchronizer extends AbstractCommonSynchronizer im
         } else {
             log().info("No annoation found for sync results with Azure DevOps");
             return null;
-        }
-    }
-
-    private int getPriorityByFailureCorridor(FailureCorridor.Value value) {
-        switch (value) {
-            case HIGH:
-                return 1;
-            case MID:
-                return 2;
-            case LOW:
-                return 3;
-            default:
-                return 1;
         }
     }
 
