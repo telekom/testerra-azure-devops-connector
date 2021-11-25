@@ -37,14 +37,13 @@ import eu.tsystems.mms.tic.testframework.annotations.Fails;
 import eu.tsystems.mms.tic.testframework.connectors.util.AbstractCommonSynchronizer;
 import eu.tsystems.mms.tic.testframework.events.MethodEndEvent;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
-import eu.tsystems.mms.tic.testframework.report.FailureCorridor;
 import eu.tsystems.mms.tic.testframework.report.model.context.ErrorContext;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.lang.reflect.Method;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -138,7 +137,9 @@ public class AzureDevOpsResultSynchronizer extends AbstractCommonSynchronizer im
                     result.setTestPoint(optionalPoint.get());
                     if (!outcome.equals(Outcome.NOT_EXECUTED)) {
                         result.setStartedDate(event.getMethodContext().getStartTime().toInstant().toString());
-                        result.setCompletedDate(event.getMethodContext().getEndTime().toInstant().toString());
+                        // Method context contains no end time at this moment
+                        //result.setCompletedDate(event.getMethodContext().getEndTime().toInstant().toString());
+                        result.setCompletedDate(new Date().toInstant().toString());
                     }
                     result.setOutcome(outcome.toString());
                     // Priority is taken from test case, cannot change with test result

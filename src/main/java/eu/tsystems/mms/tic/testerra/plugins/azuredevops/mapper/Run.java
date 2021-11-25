@@ -22,10 +22,7 @@
 
 package eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper;
 
-import com.owlike.genson.annotation.JsonDateFormat;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
-
-import java.util.Date;
 
 /**
  * Created on 20.11.2020
