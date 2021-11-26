@@ -57,7 +57,7 @@ public class PlaygroundTests extends TesterraTest {
 
     @Test
     @AzureTest(id = 2284)
-//    @Fails(description = "Das ist halt ein alter Bug.")
+    @Fails(description = "Das ist halt ein alter Bug.")
     public void test_Passed02() {
         TimerUtils.sleep(5555, "Wait some time...");
         Assert.assertTrue(false, "Mega exception");

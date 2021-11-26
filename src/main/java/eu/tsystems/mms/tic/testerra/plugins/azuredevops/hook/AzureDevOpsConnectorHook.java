@@ -24,7 +24,6 @@ package eu.tsystems.mms.tic.testerra.plugins.azuredevops.hook;
 
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.synchronize.AzureDevOpsResultSynchronizer;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
-import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 
 /**
@@ -32,7 +31,7 @@ import eu.tsystems.mms.tic.testframework.report.TesterraListener;
  *
  * @author mgn
  */
-public class AzureDevOpsConnectorHook implements ModuleHook, Loggable {
+public class AzureDevOpsConnectorHook implements ModuleHook {
 
     private static AzureDevOpsResultSynchronizer synchronizer;
 
@@ -40,6 +39,7 @@ public class AzureDevOpsConnectorHook implements ModuleHook, Loggable {
     public void init() {
         synchronizer = new AzureDevOpsResultSynchronizer();
         TesterraListener.getEventBus().register(synchronizer);
+
     }
 
     @Override

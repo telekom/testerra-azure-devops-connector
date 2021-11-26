@@ -22,6 +22,7 @@
 
 package eu.tsystems.mms.tic.testerra.plugins.azuredevops.synchronize;
 
+import com.google.common.eventbus.Subscribe;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.annotation.AzureTest;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.config.AzureDevOpsConfig;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.FailureType;
@@ -33,11 +34,13 @@ import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Run;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.RunState;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.mapper.Testplan;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.restclient.AzureDevOpsClient;
+import eu.tsystems.mms.tic.testframework.annotations.Fails;
 import eu.tsystems.mms.tic.testframework.events.TestStatusUpdateEvent;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.report.Status;
 import eu.tsystems.mms.tic.testframework.report.model.context.ErrorContext;
 import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.lang.reflect.Method;
@@ -64,6 +67,7 @@ public class AzureDevOpsResultSynchronizer implements TestStatusUpdateEvent.List
     }
 
     @Override
+    @Subscribe
     public void onTestStatusUpdate(TestStatusUpdateEvent event) {
 
         MethodContext methodContext = event.getMethodContext();
@@ -185,9 +189,14 @@ public class AzureDevOpsResultSynchronizer implements TestStatusUpdateEvent.List
                                         .findFirst()
                                         .ifPresent(errorContext -> {
                                             Throwable throwable = errorContext.getThrowable();
-                                            final String errorMessage = throwable.getMessage();
+                                            String errorMessage = throwable.getMessage();
+                                            Optional<Fails> fails = event.getMethodContext().getFailsAnnotation();
+                                            if (fails.isPresent() && StringUtils.isNotBlank(fails.get().description())) {
+                                                errorMessage += "\n\nKnown issue: " + fails.get().description();
+                                            }
                                             result.setErrorMessage(errorMessage);
                                             result.setFailureType(this.getFailureType(event).toString());
+                                            event.getMethodContext().getFailsAnnotation().get().description();
                                             final String stackTrace = ExceptionUtils.getStackTrace(throwable);
                                             result.setStackTrace(stackTrace);
                                         });
@@ -221,7 +230,6 @@ public class AzureDevOpsResultSynchronizer implements TestStatusUpdateEvent.List
             } // end active sync and annotation found
 
         } // end method.isPresent
-
 
     }
 
