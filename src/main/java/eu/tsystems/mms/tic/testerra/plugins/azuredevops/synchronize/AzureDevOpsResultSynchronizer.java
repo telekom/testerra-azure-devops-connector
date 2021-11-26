@@ -1,7 +1,7 @@
 /*
  * Testerra
  *
- * (C) 2020, Martin Großmann, T-Systems Multimedia Solutions GmbH, Deutsche Telekom AG
+ * (C) 2021, Martin Großmann, T-Systems Multimedia Solutions GmbH, Deutsche Telekom AG
  *
  * Deutsche Telekom AG and all other contributors /
  * copyright owners license this file to you under the Apache
@@ -96,27 +96,6 @@ public class AzureDevOpsResultSynchronizer implements TestStatusUpdateEvent.List
         }
 
     }
-
-//    @Override
-//    protected void pOnTestSuccess(MethodEndEvent event) {
-//        log().info("Method " + event.getTestMethod().getMethodName() + " passed");
-//        this.syncTestresult(event, Outcome.PASSED);
-//    }
-//
-//    @Override
-//    protected void pOnTestFailure(MethodEndEvent event) {
-//        log().info("Method " + event.getTestMethod().getMethodName() + " failed");
-//        // Only the last execution of a failed tests is synced
-//        // Otherwise the run contains more results of the same test method.
-//        this.syncTestresult(event, Outcome.FAILED);
-//
-//    }
-//
-//    @Override
-//    protected void pOnTestSkip(MethodEndEvent event) {
-//        log().info("Method " + event.getTestMethod().getMethodName() + " skipped");
-//        this.syncTestresult(event, Outcome.NOT_EXECUTED);
-//    }
 
     private void init() {
         this.config = AzureDevOpsConfig.getInstance();
@@ -272,15 +251,5 @@ public class AzureDevOpsResultSynchronizer implements TestStatusUpdateEvent.List
             return FailureType.NEW_ISSUE;
         }
     }
-
-//    private FailureType getFailureType(MethodEndEvent event) {
-//        final Method method = event.getTestResult().getMethod().getConstructorOrMethod().getMethod();
-//        if (method.isAnnotationPresent(Fails.class)) {
-//            return FailureType.KNOWN_ISSUE;
-//        } else {
-//            return FailureType.NEW_ISSUE;
-//        }
-//    }
-
 
 }
