@@ -24,6 +24,7 @@ package eu.tsystems.mms.tic.testerra.plugins.azuredevops.tests;
 
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.annotation.AzureTest;
 import eu.tsystems.mms.tic.testframework.annotations.Fails;
+import eu.tsystems.mms.tic.testframework.execution.testng.RetryAnalyzer;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import org.testng.Assert;
@@ -31,6 +32,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created on 26.11.2020
@@ -59,6 +61,21 @@ public class PlaygroundTests extends TesterraTest {
     public void test_Passed02() {
         TimerUtils.sleep(5555, "Wait some time...");
         Assert.assertTrue(false, "Mega exception");
+    }
+
+    AtomicInteger counter = new AtomicInteger(0);
+
+    @AzureTest(id = 2284)
+    @Test(priority = 6)
+    public void test_03RetriedTest() {
+        this.counter.incrementAndGet();
+        if (counter.get() == 1) {
+            // Message is already defined in test.properties
+            Assert.assertTrue(false, "retry_for_azuredevops_connector");
+        } else {
+            Assert.assertTrue(true);
+        }
+
     }
 
 }
