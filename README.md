@@ -31,7 +31,7 @@ It will register automatically by using Testerra `ModuleHook`, but you have to p
 
 | Azure devops connector   | Testerra      |
 | -------------------- | --------------|
-| `1.0`          | `>= 1.9`  |
+| `>= 1.0`          | `>= 1.9`  |
 
 ### Usage
 
@@ -39,7 +39,7 @@ Include the following dependency in your project.
 
 Gradle:
 ````groovy
-implementation 'io.testerra:azure-devops-connector:1.0'
+implementation 'io.testerra:azure-devops-connector:1.1'
 ````
 
 Maven:
@@ -47,7 +47,7 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>azure-devops-connector</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ````
 
