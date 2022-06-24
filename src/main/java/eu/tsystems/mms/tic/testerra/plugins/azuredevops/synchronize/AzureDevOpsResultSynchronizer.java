@@ -175,7 +175,7 @@ public class AzureDevOpsResultSynchronizer implements TestStatusUpdateEvent.List
                                             }
                                             result.setErrorMessage(errorMessage);
                                             result.setFailureType(this.getFailureType(event).toString());
-                                            event.getMethodContext().getFailsAnnotation().get().description();
+//                                            event.getMethodContext().getFailsAnnotation().get().description();
                                             final String stackTrace = ExceptionUtils.getStackTrace(throwable);
                                             result.setStackTrace(stackTrace);
                                         });
@@ -234,7 +234,7 @@ public class AzureDevOpsResultSynchronizer implements TestStatusUpdateEvent.List
         if (methodFromEvent.isPresent() && methodFromEvent.get().isAnnotationPresent(AzureTest.class)) {
             return Optional.of(methodFromEvent.get().getAnnotation(AzureTest.class));
         } else {
-            log().info("No annoation found for sync results with Azure DevOps");
+            log().info("No annotation found for sync results with Azure DevOps");
             return Optional.empty();
         }
     }
