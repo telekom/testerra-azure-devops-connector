@@ -39,7 +39,7 @@ Include the following dependency in your project.
 
 Gradle:
 ````groovy
-implementation 'io.testerra:azure-devops-connector:1.1'
+implementation 'io.testerra:azure-devops-connector:1.2'
 ````
 
 Maven:
@@ -47,7 +47,7 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>azure-devops-connector</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 ````
 

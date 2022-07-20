@@ -49,23 +49,23 @@ public class PlaygroundTests extends TesterraTest {
 //    }
 
     @Test
-    @AzureTest(id = 2257)
+    @AzureTest(id = 2407)
     public void test_Passed01() {
-        TimerUtils.sleep(5555, "Wait some time...");
+        TimerUtils.sleep(555, "Wait some time...");
         Assert.assertTrue(true);
     }
 
     @Test
-    @AzureTest(id = 2284)
+    @AzureTest(id = 2408)
     @Fails(description = "Das ist halt ein alter Bug.")
     public void test_Passed02() {
-        TimerUtils.sleep(5555, "Wait some time...");
+        TimerUtils.sleep(555, "Wait some time...");
         Assert.assertTrue(false, "Mega exception");
     }
 
     AtomicInteger counter = new AtomicInteger(0);
 
-    @AzureTest(id = 2284)
+    @AzureTest(id = 2409)
     @Test(priority = 6)
     public void test_03RetriedTest() {
         this.counter.incrementAndGet();
