@@ -70,6 +70,10 @@ public class PlaygroundAzureClient extends TesterraTest {
         client.updateRun(run);
     }
 
+    /**
+     * Create an empty run
+     *
+     */
     @Test
     public void createRun() {
         Run run = new Run();
@@ -93,7 +97,7 @@ public class PlaygroundAzureClient extends TesterraTest {
     @Test
     public void test_FindTestpoint() {
         PointsFilter pointsFilter = new PointsFilter();
-        pointsFilter.addTestcaseId(2257);
+        pointsFilter.addTestcaseId(2407);
 
         AzureDevOpsClient azureDevOpsClient = new AzureDevOpsClient();
         Points points = azureDevOpsClient.getPoints(pointsFilter);
@@ -103,11 +107,14 @@ public class PlaygroundAzureClient extends TesterraTest {
         System.out.println(points.getPoints().get(0).getId());
     }
 
+    /**
+     * Add a test result to a specific run.
+     */
     @Test
     public void test_AddTestResult() {
         AzureDevOpsClient client = new AzureDevOpsClient();
-        int testcaseId = 2284;
-        int testRunId = 1706;
+        int testcaseId = 2407;
+        int testRunId = 25959;
 
         // Find out the test point
         PointsFilter pointsFilter = new PointsFilter();
