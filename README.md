@@ -32,9 +32,11 @@ It will register automatically by using Testerra `ModuleHook`, but you have to p
 | Azure devops connector | Testerra |
 |------------------------|----------|
 | `>= 1.0`               | `>= 1.9` |
-| `>= 2.0`               | `>=2.0`  |
+| `>= 2.0`               | `>=2.1`  |
 
 Tested with API version 5.0 at Azure DevOps Server 2020 Update 1.1 (5.1 and 6.0 are not working, cannot add result to run)
+
+Note: Testerra 2.0 is not compatible with connector version 2.0. Please use Testerra 2.1 or above.
 
 ### Usage
 

@@ -175,7 +175,6 @@ public class AzureDevOpsResultSynchronizer implements TestStatusUpdateEvent.List
                                             }
                                             result.setErrorMessage(errorMessage);
                                             result.setFailureType(this.getFailureType(event).toString());
-//                                            event.getMethodContext().getFailsAnnotation().get().description();
                                             final String stackTrace = ExceptionUtils.getStackTrace(throwable);
                                             result.setStackTrace(stackTrace);
                                         });
