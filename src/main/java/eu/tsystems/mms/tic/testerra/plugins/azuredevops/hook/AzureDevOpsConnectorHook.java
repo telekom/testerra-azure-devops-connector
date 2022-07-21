@@ -22,29 +22,29 @@
 
 package eu.tsystems.mms.tic.testerra.plugins.azuredevops.hook;
 
+import com.google.inject.AbstractModule;
 import eu.tsystems.mms.tic.testerra.plugins.azuredevops.synchronize.AzureDevOpsResultSynchronizer;
+import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
-import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 
 /**
  * Created on 17.11.2020
  *
  * @author mgn
  */
-public class AzureDevOpsConnectorHook implements ModuleHook {
+public class AzureDevOpsConnectorHook extends AbstractModule implements ModuleHook {
 
     private static AzureDevOpsResultSynchronizer synchronizer;
 
     @Override
     public void init() {
         synchronizer = new AzureDevOpsResultSynchronizer();
-        TesterraListener.getEventBus().register(synchronizer);
-
+        Testerra.getEventBus().register(synchronizer);
     }
 
     @Override
     public void terminate() {
         synchronizer.shutdown();
-        TesterraListener.getEventBus().unregister(synchronizer);
+        Testerra.getEventBus().unregister(synchronizer);
     }
 }

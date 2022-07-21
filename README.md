@@ -29,9 +29,12 @@ It will register automatically by using Testerra `ModuleHook`, but you have to p
 ### Requirements
 
 
-| Azure devops connector   | Testerra      |
-| -------------------- | --------------|
-| `>= 1.0`          | `>= 1.9`  |
+| Azure devops connector | Testerra |
+|------------------------|----------|
+| `>= 1.0`               | `>= 1.9` |
+| `>= 2.0`               | `>=2.0`  |
+
+Tested with API version 5.0 at Azure DevOps Server 2020 Update 1.1 (5.1 and 6.0 are not working, cannot add result to run)
 
 ### Usage
 
@@ -39,7 +42,7 @@ Include the following dependency in your project.
 
 Gradle:
 ````groovy
-implementation 'io.testerra:azure-devops-connector:1.2'
+implementation 'io.testerra:azure-devops-connector:2.0'
 ````
 
 Maven:
@@ -47,7 +50,7 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>azure-devops-connector</artifactId>
-    <version>1.2</version>
+    <version>2.0</version>
 </dependency>
 ````
 
@@ -65,7 +68,7 @@ Add the property file ``azuredevops.properties`` and add project specific settin
 | azure.user                   | na.               | User with permissions to execute test cases (create/update test runs, create test results)                    |
 | azure.token                  | na.               | Token must generated in Azure DevOps in Profile -> Security -> Personal Access Token                          |
 | azure.sync.enabled           | false             | Flag, if test result sync is activated                                                                        |
-| azure.project.root           | na.               | Root of REST API of the project, e.g. `agile/<project>/_apis`                                                 |
+| azure.api.root               | na.               | Root of REST API of the project, e.g. `agile/<project>/_apis`                                                 |
 | azure.api.version            | na.               | Current API version of your Azure DevOps system, e.g. `5.1`                                                   |
 | azure.api.version.get.points | azure.api.version | In some cases the endpoint for getting the test points differs from general API version, e.g. `5.1-preview.2` |
 | azure.testplan.id            | na.               | Define the test plan where your test cases are added.                                                         |
@@ -95,10 +98,6 @@ Steps for sync
 | 4 | Create a test result and add it to the run. | Request contains the test point. https://docs.microsoft.com/en-us/rest/api/azure/devops/test/results/add?view=azure-devops-rest-6.0 |
 | 5 | Update the run | Set finisher date and close the run. https://docs.microsoft.com/en-us/rest/api/azure/devops/test/runs/update?view=azure-devops-rest-6.0 |
 
-### Compatibility
-
-- Tested with API version 5.0 at Azure DevOps Server 2020 Update 1.1 (5.1 and 6.0 are not working, cannot add result to run)
-
 ---
 
 ## Publication
@@ -107,15 +106,15 @@ This module is deployed and published to Maven Central. All JAR files are signed
 
 The following properties have to be set via command line or ``~/.gradle/gradle.properties``
 
-| Property                      | Description                                         |
-| ----------------------------- | --------------------------------------------------- |
-| `moduleVersion`               | Version of deployed module, default is `1-SNAPSHOT` |
-| `deployUrl`                   | Maven repository URL                                |
-| `deployUsername`              | Maven repository username                           |
-| `deployPassword`              | Maven repository password                           |
-| `signing.keyId`               | GPG private key ID (short form)                     |
-| `signing.password`            | GPG private key password                            |
-| `signing.secretKeyRingFile`   | Path to GPG private key                             |
+| Property                    | Description                                         |
+|-----------------------------|-----------------------------------------------------|
+| `moduleVersion`             | Version of deployed module, default is `1-SNAPSHOT` |
+| `deployUrl`                 | Maven repository URL                                |
+| `deployUsername`            | Maven repository username                           |
+| `deployPassword`            | Maven repository password                           |
+| `signing.keyId`             | GPG private key ID (short form)                     |
+| `signing.password`          | GPG private key password                            |
+| `signing.secretKeyRingFile` | Path to GPG private key                             |
 
 If all properties are set, call the following to build, deploy and release this module:
 ````shell

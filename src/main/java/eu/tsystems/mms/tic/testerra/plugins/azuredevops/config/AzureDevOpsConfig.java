@@ -22,7 +22,8 @@
 
 package eu.tsystems.mms.tic.testerra.plugins.azuredevops.config;
 
-import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.common.IProperties;
+import eu.tsystems.mms.tic.testframework.common.PropertyManagerProvider;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,45 +37,45 @@ import java.util.Base64;
  *
  * @author mgn
  */
-public class AzureDevOpsConfig implements Loggable {
+public class AzureDevOpsConfig implements Loggable, PropertyManagerProvider {
 
-    private static final String FILE_NAME = "azuredevops.properties";
+    public enum Properties implements IProperties {
+        AZURE_URL("azure.url", ""),
+        AZURE_USER("azure.user", ""),
+        AZURE_TOKEN("azure.token", ""),
+        AZURE_SYNC_ENABLED("azure.sync.enabled", false),
+        AZURE_API_ROOT("azure.api.root", ""),
+        AZURE_API_VERSION("azure.api.version", ""),
+        AZURE_API_VERSION_POINTS("azure.api.version.get.points", Properties.AZURE_API_VERSION.asString()),
+        AZURE_TESTPLAN_ID("azure.testplan.id", 0),
+        AZURE_RUN_NAME("azure.run.name", LocalDateTime.now().toString());
+
+        private final String property;
+        private final Object defaultValue;
+
+        Properties(String property, Object defaultValue) {
+            this.property = property;
+            this.defaultValue = defaultValue;
+        }
+
+        @Override
+        public Object getDefault() {
+            return defaultValue;
+        }
+
+        @Override
+        public String toString() {
+            return property;
+        }
+    }
 
     private static AzureDevOpsConfig instance = null;
-
-    private String azureUrl;
-
-    private String azureUser;
-
-    private String azureUserToken;
-
-    private String azureAuthenticationString;
-
-    private String azureApiRoot;
-
-    private String azureApiVersion;
-
-    private String azureApiVersionGetPoints;
-
+    private final String azureAuthenticationString;
     private boolean azureSyncEnabled = false;
 
-    private int azureTestPlanId;
-
-    private String azureRunName;
-
     private AzureDevOpsConfig() {
-        PropertyManager.loadProperties(FILE_NAME);
-
-        this.azureUrl = PropertyManager.getProperty("azure.url") + "/";
-        this.azureUser = PropertyManager.getProperty("azure.user");
-        this.azureUserToken = PropertyManager.getProperty("azure.token");
-        this.azureSyncEnabled = PropertyManager.getBooleanProperty("azure.sync.enabled", false);
-        this.azureApiRoot = PropertyManager.getProperty("azure.project.root") + "/";
-        this.azureApiVersion = PropertyManager.getProperty("azure.api.version");
-        this.azureApiVersionGetPoints = PropertyManager.getProperty("azure.api.version.get.points", this.azureApiVersion);
-
-        this.azureTestPlanId = PropertyManager.getIntProperty("azure.testplan.id", 0);
-        this.azureRunName = PropertyManager.getProperty("azure.run.name", LocalDateTime.now().toString());
+        PROPERTY_MANAGER.loadProperties("azuredevops.properties");
+        this.azureSyncEnabled = Properties.AZURE_SYNC_ENABLED.asBool();
 
         // Store generated authorization string
         this.azureAuthenticationString = generateAuthorizationString();
@@ -90,15 +91,15 @@ public class AzureDevOpsConfig implements Loggable {
     }
 
     public String getAzureUrl() {
-        return this.azureUrl;
+        return Properties.AZURE_URL.asString() + "/";
     }
 
     public String getAzureUser() {
-        return this.azureUser;
+        return Properties.AZURE_USER.asString();
     }
 
     public String getAzureUserToken() {
-        return this.azureUserToken;
+        return Properties.AZURE_TOKEN.asString();
     }
 
     /**
@@ -118,15 +119,15 @@ public class AzureDevOpsConfig implements Loggable {
     }
 
     public String getAzureApiRoot() {
-        return azureApiRoot;
+        return Properties.AZURE_API_ROOT.asString() + "/";
     }
 
     public String getAzureApiVersion() {
-        return azureApiVersion;
+        return Properties.AZURE_API_VERSION.asString();
     }
 
-    public String getAzureApiVersionGetPoints() {
-        return azureApiVersionGetPoints;
+    public String getAzureApiVersionPoints() {
+        return Properties.AZURE_API_VERSION_POINTS.asString();
     }
 
     public boolean isAzureSyncEnabled() {
@@ -134,11 +135,11 @@ public class AzureDevOpsConfig implements Loggable {
     }
 
     public int getAzureTestPlanId() {
-        return this.azureTestPlanId;
+        return Math.toIntExact(Properties.AZURE_TESTPLAN_ID.asLong());
     }
 
     public String getAzureRunName() {
-        return azureRunName;
+        return Properties.AZURE_RUN_NAME.asString();
     }
 
     public void deactivateResultSync() {
@@ -156,19 +157,19 @@ public class AzureDevOpsConfig implements Loggable {
                 log().error("Azure DevOps URL is not valid.");
                 this.azureSyncEnabled = false;
             }
-            if (StringUtils.isEmpty(this.azureUser)) {
+            if (StringUtils.isEmpty(Properties.AZURE_USER.asString())) {
                 log().error("Azure DevOps user is not defined.");
             }
             if (StringUtils.isEmpty(this.azureAuthenticationString)) {
                 log().error("Azure DevOps user token is not defined.");
             }
-            if (StringUtils.isEmpty(this.azureApiRoot)) {
+            if (StringUtils.isEmpty(Properties.AZURE_API_ROOT.asString())) {
                 log().error("Azure DevOps API root is not defined.");
             }
-            if (StringUtils.isEmpty(this.azureApiVersion)) {
+            if (StringUtils.isEmpty(Properties.AZURE_API_VERSION.asString())) {
                 log().error("Azure DevOps API version is not defined.");
             }
-            if (this.azureTestPlanId == 0) {
+            if (Properties.AZURE_TESTPLAN_ID.asLong() == 0) {
                 log().error("Azure DevOps testplan ID is not defined.");
             }
             if (!this.azureSyncEnabled) {
