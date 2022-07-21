@@ -135,7 +135,7 @@ public class AzureDevOpsClient implements Loggable {
         Points points = new Points();
         points.setPointsFilter(filter);
 
-        Response response = this.getBuilder("test/points", this.getApiVersion(this.config.getAzureApiVersionGetPoints())).post(Entity.entity(points, MediaType.APPLICATION_JSON));
+        Response response = this.getBuilder("test/points", this.getApiVersion(this.config.getAzureApiVersionPoints())).post(Entity.entity(points, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() != HttpStatus.SC_OK) {
             ErrorResponse errorResponse = response.readEntity(ErrorResponse.class);

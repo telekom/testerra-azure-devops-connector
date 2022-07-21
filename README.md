@@ -65,7 +65,7 @@ Add the property file ``azuredevops.properties`` and add project specific settin
 | azure.user                   | na.               | User with permissions to execute test cases (create/update test runs, create test results)                    |
 | azure.token                  | na.               | Token must generated in Azure DevOps in Profile -> Security -> Personal Access Token                          |
 | azure.sync.enabled           | false             | Flag, if test result sync is activated                                                                        |
-| azure.project.root           | na.               | Root of REST API of the project, e.g. `agile/<project>/_apis`                                                 |
+| azure.api.root               | na.               | Root of REST API of the project, e.g. `agile/<project>/_apis`                                                 |
 | azure.api.version            | na.               | Current API version of your Azure DevOps system, e.g. `5.1`                                                   |
 | azure.api.version.get.points | azure.api.version | In some cases the endpoint for getting the test points differs from general API version, e.g. `5.1-preview.2` |
 | azure.testplan.id            | na.               | Define the test plan where your test cases are added.                                                         |
