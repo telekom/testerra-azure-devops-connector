@@ -159,18 +159,23 @@ public class AzureDevOpsConfig implements Loggable, PropertyManagerProvider {
             }
             if (StringUtils.isEmpty(Properties.AZURE_USER.asString())) {
                 log().error("Azure DevOps user is not defined.");
+                this.azureSyncEnabled = false;
             }
             if (StringUtils.isEmpty(this.azureAuthenticationString)) {
                 log().error("Azure DevOps user token is not defined.");
+                this.azureSyncEnabled = false;
             }
             if (StringUtils.isEmpty(Properties.AZURE_API_ROOT.asString())) {
                 log().error("Azure DevOps API root is not defined.");
+                this.azureSyncEnabled = false;
             }
             if (StringUtils.isEmpty(Properties.AZURE_API_VERSION.asString())) {
                 log().error("Azure DevOps API version is not defined.");
+                this.azureSyncEnabled = false;
             }
             if (Properties.AZURE_TESTPLAN_ID.asLong() == 0) {
                 log().error("Azure DevOps testplan ID is not defined.");
+                this.azureSyncEnabled = false;
             }
             if (!this.azureSyncEnabled) {
                 log().warn("Azure DevOps sync was disabled because of missing/invalid properties.");
