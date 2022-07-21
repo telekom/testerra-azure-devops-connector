@@ -86,7 +86,7 @@ public void test_case_01() {
 }
 ````
 
-### How its work
+### How it works
 
 Steps for sync
 
