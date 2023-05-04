@@ -29,14 +29,17 @@ It will register automatically by using Testerra `ModuleHook`, but you have to p
 ### Requirements
 
 
-| Azure devops connector | Testerra |
-|------------------------|----------|
-| `>= 1.0`               | `>= 1.9` |
-| `>= 2.0`               | `>=2.1`  |
+| Azure devops connector | Testerra    |
+|------------------------|-------------|
+| `>= 1.0`               | `>= 1.9`    |
+| `2.0`                  | `2.1 - 2.2` |
+| `>= 2.1`               | `>= 2.3`    |
 
-Tested with API version 5.0 at Azure DevOps Server 2020 Update 1.1 (5.1 and 6.0 are not working, cannot add result to run)
+Notes: 
 
-Note: Testerra 2.0 is not compatible with connector version 2.0. Please use Testerra 2.1 or above.
+* Tested with API version 5.0 at Azure DevOps Server 2020 Update 1.1 (5.1 and 6.0 are not working, cannot add result to run)
+* Testerra 2.0 is not compatible with connector version 2.0. Please use Testerra 2.1 or above.
+* From version 2.1 you need at least **JDK11**.
 
 ### Usage
 
@@ -44,7 +47,7 @@ Include the following dependency in your project.
 
 Gradle:
 ````groovy
-implementation 'io.testerra:azure-devops-connector:2.0'
+implementation 'io.testerra:azure-devops-connector:2.1'
 ````
 
 Maven:
@@ -52,11 +55,9 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>azure-devops-connector</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
 </dependency>
 ````
-
-***Important note:*** This module is not compatible with the Testerra legacy report (`report` module). Please always use `report-ng`.
 
 ## Documentation
 
