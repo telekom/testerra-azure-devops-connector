@@ -1,11 +1,10 @@
 plugins {
-    id "io.codearte.nexus-staging" version "0.30.0"
+    id "org.danilopianini.publish-on-central" version "9.0.2"
 }
 
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-apply plugin: 'io.codearte.nexus-staging'
 
 ext {
     // Minimum required Testerra version
@@ -14,7 +13,7 @@ ext {
     testerraTestVersion = '[2,3-SNAPSHOT)'
 
     // Default version
-    moduleVersion = '1-SNAPSHOT'
+    moduleVersion = '2-SNAPSHOT'
     if (System.properties.containsKey('moduleVersion')) {
         moduleVersion = System.getProperty('moduleVersion')
     }
@@ -25,6 +24,10 @@ ext {
 
 // Do not move this integration because `group` and `version` is needed for publishing
 apply from: rootProject.file('publish.gradle')
+
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     compileOnly 'io.testerra:core:' + testerraCompileVersion
@@ -48,22 +51,8 @@ test {
     useTestNG()
 }
 
-repositories {
-    mavenCentral()
-}
+
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
-
-//task unitTests(type: Test) {
-//    useTestNG() {
-//        suites 'src/test/resources/unit_tests.xml'
-//    }
-//}
-//
-//task integrationTests(type: Test) {
-//    useTestNG() {
-//        suites 'src/test/resources/integration_tests.xml'
-//    }
-//}
